@@ -1,4 +1,429 @@
-<!DOCTYPE html>
+// Global variables
+        let currentSection = 'projects';
+        let uploadedFiles = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSystem();
+            setupEventListeners();
+        });
+
+        function initializeSystem() {
+            // Load dashboard stats
+            updateDashboardStats();
+            
+            // Setup file upload
+            setupFileUpload();
+            
+            // Load data
+            loadProjectsData();
+            loadTasksData();
+            loadDocumentsData();
+            
+            console.log('Project Management System initialized');
+        }
+
+        function setupEventListeners() {
+            // Search functionality
+            document.getElementById('projectSearch').addEventListener('input', filterProjects);
+            document.getElementById('projectFilter').addEventListener('change', filterProjects);
+            
+            // Form submissions
+            document.getElementById('addProjectForm').addEventListener('submit', handleAddProject);
+            document.getElementById('uploadDocumentForm').addEventListener('submit', handleUploadDocument);
+        }
+
+        // Section Management
+        function showSection(sectionName) {
+            // Update active menu item
+            document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName + '-section').style.display = 'block';
+            currentSection = sectionName;
+        }
+
+        // Tab Management
+        function showTab(tabName) {
+            // Update active tab button
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        // Modal Management
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            
+            // Reset form if it exists
+            const form = document.querySelector(`#${modalId} form`);
+            if (form) {
+                form.reset();
+            }
+            
+            // Clear uploaded files
+            uploadedFiles = [];
+            updateUploadedFilesList();
+        }
+
+        // Project Management
+        function handleAddProject(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            
+            const projectData = {
+                tradeName: formData.get('tradeName'),
+                genericName: formData.get('genericName'),
+                client: formData.get('clientName'),
+                phone: formData.get('phone'),
+                email: formData.get('email'),
+                serviceType: formData.get('serviceType'),
+                productType: formData.get('productType'),
+                notes: formData.get('notes'),
+                status: 'pending',
+                dateCreated: new Date().toLocaleDateString('th-TH')
+            };
+
+            // Add to projects data (in real app, this would be an API call)
+            addProjectToTable(projectData);
+            
+            closeModal('addProjectModal');
+            showNotification('เพิ่มงานใหม่สำเร็จ', 'success');
+            
+            // Update stats
+            updateDashboardStats();
+        }
+
+        function addProjectToTable(projectData) {
+            const tableBody = document.getElementById('projectsTable');
+            const row = document.createElement('tr');
+            
+            const serviceNames = {
+                fertilizer: 'ขึ้นทะเบียนปุ๋ย',
+                chemical: 'ขึ้นทะเบียนสารเคมี',
+                hazardous: 'ขึ้นทะเบียนวัตถุอันตราย',
+                license: 'ต่อใบอนุญาตผลิต',
+                import: 'ใบอนุญาตนำเข้า',
+                renewal: 'ต่ออายุต่างๆ'
+            };
+            
+            row.innerHTML = `
+                <td>${projectData.tradeName}</td>
+                <td>${projectData.genericName}</td>
+                <td>${serviceNames[projectData.serviceType] || projectData.serviceType}</td>
+                <td><span class="status-badge status-pending">รอดำเนินการ</span></td>
+                <td>${projectData.dateCreated}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="action-btn btn-success" onclick="viewProject(${Date.now()})">👁️</button>
+                        <button class="action-btn btn-warning" onclick="editProject(${Date.now()})">✏️</button>
+                        <button class="action-btn btn-danger" onclick="deleteProject(${Date.now()})">🗑️</button>
+                    </div>
+                </td>
+            `;
+            
+            tableBody.appendChild(row);
+        }
+
+        function viewProject(projectId) {
+            // Mock project data - in real app, fetch from API
+            const projectDetail = `
+                <div style="padding: 1rem;">
+                    <h4 style="margin-bottom: 1rem; color: #1976d2;">ข้อมูลงาน</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+                        <div><strong>ชื่อการค้า:</strong> SuperGrow Plus</div>
+                        <div><strong>ชื่อสามัญ:</strong> NPK 15-15-15</div>
+                        <div><strong>ลูกค้า:</strong> บริษัท เคมีเกษตร จำกัด</div>
+                        <div><strong>โทรศัพท์:</strong> 084-375-2399</div>
+                        <div><strong>บริการ:</strong> ขึ้นทะเบียนปุ๋ย</div>
+                        <div><strong>สถานะ:</strong> <span class="status-badge status-pending">รอดำเนินการ</span></div>
+                    </div>
+                    
+                    <h4 style="margin-bottom: 1rem; color: #1976d2;">ประวัติการทำงาน</h4>
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
+                        <div style="margin-bottom: 0.5rem;">📋 15/12/2024 - สร้างงานใหม่</div>
+                        <div style="margin-bottom: 0.5rem;">📝 16/12/2024 - รับเอกสารเบื้องต้น</div>
+                        <div style="margin-bottom: 0.5rem;">🧪 17/12/2024 - ส่งตัวอย่างไปทดสอบ</div>
+                        <div style="margin-bottom: 0.5rem;">⏰ รอผลการทดสอบจากห้องปฏิบัติการ</div>
+                    </div>
+                    
+                    <h4 style="margin-bottom: 1rem; color: #1976d2;">เอกสารที่เกี่ยวข้อง</h4>
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <span>📄 ใบคำขอขึ้นทะเบียนปุ๋ย</span>
+                            <button class="btn" style="padding: 0.3rem 0.8rem; font-size: 0.9rem;">ดาวน์โหลด</button>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <span>📋 รายละเอียดส่วนประกอบ</span>
+                            <button class="btn" style="padding: 0.3rem 0.8rem; font-size: 0.9rem;">ดาวน์โหลด</button>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>🧪 ผลการทดสอบเบื้องต้น</span>
+                            <button class="btn" style="padding: 0.3rem 0.8rem; font-size: 0.9rem;">ดาวน์โหลด</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('projectDetailContent').innerHTML = projectDetail;
+            openModal('projectDetailModal');
+        }
+
+        function editProject(projectId) {
+            showNotification('ฟีเจอร์แก้ไขข้อมูลงาน - กำลังพัฒนา', 'warning');
+        }
+
+        function deleteProject(projectId) {
+            if (confirm('แน่ใจหรือไม่ที่จะลบงานนี้?')) {
+                showNotification('ลบงานสำเร็จ', 'success');
+                // In real app, make API call to delete
+            }
+        }
+
+        function filterProjects() {
+            const searchTerm = document.getElementById('projectSearch').value.toLowerCase();
+            const filterValue = document.getElementById('projectFilter').value;
+            
+            // Implementation for filtering projects table
+            showNotification('กำลังค้นหา...', 'warning');
+        }
+
+        function exportProjects() {
+            showNotification('ส่งออกข้อมูลงานสำเร็จ', 'success');
+        }
+
+        // Document Management
+        function setupFileUpload() {
+            const uploadArea = document.getElementById('fileUploadArea');
+            const fileInput = document.getElementById('documentFileInput');
+
+            uploadArea.addEventListener('click', () => fileInput.click());
+
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                handleFiles(e.dataTransfer.files);
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                handleFiles(e.target.files);
+            });
+        }
+
+        function handleFiles(files) {
+            for (let file of files) {
+                if (file.size > 10 * 1024 * 1024) {
+                    showNotification(`ไฟล์ ${file.name} ใหญ่เกิน 10MB`, 'error');
+                    continue;
+                }
+
+                uploadedFiles.push(file);
+            }
+            updateUploadedFilesList();
+        }
+
+        function updateUploadedFilesList() {
+            const container = document.getElementById('uploadedFilesList');
+            container.innerHTML = '';
+
+            uploadedFiles.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <span>📄 ${file.name} (${formatFileSize(file.size)})</span>
+                    <button type="button" onclick="removeUploadedFile(${index})" style="background: #f44336; color: white; border: none; border-radius: 3px; padding: 0.2rem 0.5rem; cursor: pointer;">×</button>
+                `;
+                container.appendChild(fileItem);
+            });
+        }
+
+        function removeUploadedFile(index) {
+            uploadedFiles.splice(index, 1);
+            updateUploadedFilesList();
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function handleUploadDocument(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+
+            if (uploadedFiles.length === 0) {
+                showNotification('กรุณาเลือกไฟล์ที่จะอัปโหลด', 'error');
+                return;
+            }
+
+            // Simulate upload process
+            showNotification('กำลังอัปโหลดเอกสาร...', 'warning');
+            
+            setTimeout(() => {
+                showNotification('อัปโหลดเอกสารสำเร็จ', 'success');
+                closeModal('uploadDocumentModal');
+                
+                // Add to documents table
+                addDocumentToTable({
+                    name: uploadedFiles[0].name,
+                    projectId: formData.get('projectId'),
+                    type: formData.get('documentType'),
+                    size: formatFileSize(uploadedFiles[0].size),
+                    uploadDate: new Date().toLocaleDateString('th-TH')
+                });
+                
+                uploadedFiles = [];
+            }, 2000);
+        }
+
+        function addDocumentToTable(documentData) {
+            const tableBody = document.getElementById('documentsTable');
+            const row = document.createElement('tr');
+            
+            const projectNames = {
+                '1': 'SuperGrow Plus - ปุ๋ยเคมี',
+                '2': 'BugKill Pro - สารกำจัดแมลง',
+                '3': 'GreenShield - สารป้องกันโรคพืช'
+            };
+            
+            const typeNames = {
+                'certificate': 'ใบสำคัญ',
+                'application': 'ใบคำขอ',
+                'test-report': 'รายงานผลทดสอบ',
+                'license': 'ใบอนุญาต',
+                'other': 'อื่นๆ'
+            };
+            
+            row.innerHTML = `
+                <td>📄 ${documentData.name}</td>
+                <td>${projectNames[documentData.projectId] || 'ไม่ระบุ'}</td>
+                <td>${typeNames[documentData.type] || documentData.type}</td>
+                <td>${documentData.size}</td>
+                <td>${documentData.uploadDate}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="action-btn btn-success" onclick="downloadDocument(${Date.now()})">⬇️</button>
+                        <button class="action-btn btn-warning" onclick="shareDocument(${Date.now()})">🔗</button>
+                        <button class="action-btn btn-danger" onclick="deleteDocument(${Date.now()})">🗑️</button>
+                    </div>
+                </td>
+            `;
+            
+            tableBody.appendChild(row);
+        }
+
+        function downloadDocument(docId) {
+            showNotification('เริ่มการดาวน์โหลด...', 'success');
+        }
+
+        function shareDocument(docId) {
+            const shareUrl = `https://yourdomain.com/share/doc/${docId}`;
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                showNotification('คัดลอกลิงก์แชร์แล้ว', 'success');
+            });
+        }
+
+        function deleteDocument(docId) {
+            if (confirm('แน่ใจหรือไม่ที่จะลบเอกสารนี้?')) {
+                showNotification('ลบเอกสารสำเร็จ', 'success');
+            }
+        }
+
+        // Task Management
+        function completeTask(taskId) {
+            if (confirm('ทำเครื่องหมายงานนี้เป็นเสร็จสิ้น?')) {
+                showNotification('ทำเครื่องหมายงานเสร็จสิ้นแล้ว', 'success');
+                updateDashboardStats();
+            }
+        }
+
+        function editTask(taskId) {
+            showNotification('ฟีเจอร์แก้ไขงาน - กำลังพัฒนา', 'warning');
+        }
+
+        function renewLicense(licenseId) {
+            showNotification('เริ่มกระบวนการต่ออายุใบอนุญาต', 'success');
+        }
+
+        function contactCustomer(customerId) {
+            showNotification('เปิดระบบติดต่อลูกค้า', 'success');
+        }
+
+        // Utility Functions
+        function updateDashboardStats() {
+            // Simulate stats update
+            document.getElementById('totalProjects').textContent = Math.floor(Math.random() * 60) + 50;
+            document.getElementById('activeProjects').textContent = Math.floor(Math.random() * 20) + 10;
+            document.getElementById('pendingTasks').textContent = Math.floor(Math.random() * 15) + 8;
+            document.getElementById('totalDocuments').textContent = Math.floor(Math.random() * 100) + 280;
+        }
+
+        function loadProjectsData() {
+            // Mock function - in real app, fetch from API
+            console.log('Loading projects data...');
+        }
+
+        function loadTasksData() {
+            // Mock function - in real app, fetch from API
+            console.log('Loading tasks data...');
+        }
+
+        function loadDocumentsData() {
+            // Mock function - in real app, fetch from API
+            console.log('Loading documents data...');
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function logout() {
+            if (confirm('แน่ใจหรือไม่ที่จะออกจากระบบ?')) {
+                showNotification('ออกจากระบบสำเร็จ', 'success');
+                // Redirect to login page
+            }
+        }
+
+        // Auto-save draft functionality
+        setInterval(() => {
+            // Auto-save any form data as draft
+            console.log('Auto-saving drafts...');
+        }, 30000); // Every 30 seconds<!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
@@ -533,23 +958,23 @@
         <!-- Dashboard Stats -->
         <div class="dashboard-stats">
             <div class="stat-card">
-                <div class="stat-icon">👥</div>
-                <div class="stat-number" id="totalCustomers">48</div>
-                <div class="stat-label">ลูกค้าทั้งหมด</div>
-            </div>
-            <div class="stat-card">
                 <div class="stat-icon">📋</div>
-                <div class="stat-number" id="activeProjects">12</div>
-                <div class="stat-label">โครงการดำเนินการ</div>
+                <div class="stat-number" id="totalProjects">51</div>
+                <div class="stat-label">งานทั้งหมด</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">⏰</div>
-                <div class="stat-number" id="pendingTasks">8</div>
+                <div class="stat-number" id="activeProjects">13</div>
+                <div class="stat-label">โครงการดำเนินการ</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🕒</div>
+                <div class="stat-number" id="pendingTasks">10</div>
                 <div class="stat-label">งานรอดำเนินการ</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">📁</div>
-                <div class="stat-number" id="totalDocuments">156</div>
+                <div class="stat-number" id="totalDocuments">287</div>
                 <div class="stat-label">เอกสารทั้งหมด</div>
             </div>
         </div>
@@ -559,8 +984,8 @@
             <div class="sidebar">
                 <div class="sidebar-header">เมนูหลัก</div>
                 <ul class="sidebar-menu">
-                    <li><a href="#" onclick="showSection('customers')" class="active">👥 ข้อมูลลูกค้า</a></li>
-                    <li><a href="#" onclick="showSection('tasks')">📋 ติดตามงาน</a></li>
+                    <li><a href="#" onclick="showSection('projects')" class="active">📋 จัดการงานทั้งหมด</a></li>
+                    <li><a href="#" onclick="showSection('tasks')">⏰ ติดตามงาน</a></li>
                     <li><a href="#" onclick="showSection('documents')">📁 จัดการเอกสาร</a></li>
                     <li><a href="#" onclick="showSection('calendar')">📅 ปฏิทินงาน</a></li>
                     <li><a href="#" onclick="showSection('reports')">📊 รายงาน</a></li>
@@ -570,49 +995,50 @@
 
             <!-- Content Area -->
             <div class="content-area">
-                <!-- Customers Section -->
-                <div id="customers-section" class="section active">
+                <!-- Projects Section -->
+                <div id="projects-section" class="section active">
                     <div class="content-header">
-                        <h2 class="content-title">จัดการข้อมูลลูกค้า</h2>
-                        <button class="btn" onclick="openModal('addCustomerModal')">
-                            ➕ เพิ่มลูกค้าใหม่
+                        <h2 class="content-title">จัดการงานทั้งหมด</h2>
+                        <button class="btn" onclick="openModal('addProjectModal')">
+                            ➕ เพิ่มงานใหม่
                         </button>
                     </div>
                     <div class="content-body">
                         <div class="search-bar">
-                            <input type="text" class="search-input" placeholder="ค้นหาลูกค้า..." id="customerSearch">
-                            <select class="filter-select" id="customerFilter">
+                            <input type="text" class="search-input" placeholder="ค้นหางาน..." id="projectSearch">
+                            <select class="filter-select" id="projectFilter">
                                 <option value="">ทุกสถานะ</option>
-                                <option value="active">ลูกค้าปัจจุบัน</option>
+                                <option value="active">ดำเนินการ</option>
                                 <option value="pending">รอดำเนินการ</option>
                                 <option value="completed">เสร็จสิ้น</option>
+                                <option value="approved">อนุมัติแล้ว</option>
                             </select>
-                            <button class="btn" onclick="exportCustomers()">📤 ส่งออกข้อมูล</button>
+                            <button class="btn" onclick="exportProjects()">📤 ส่งออกข้อมูล</button>
                         </div>
 
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>ชื่อลูกค้า</th>
-                                    <th>บริษัท</th>
+                                    <th>ชื่อการค้า</th>
+                                    <th>ชื่อสามัญ</th>
                                     <th>บริการ</th>
                                     <th>สถานะ</th>
                                     <th>วันที่สร้าง</th>
                                     <th>การจัดการ</th>
                                 </tr>
                             </thead>
-                            <tbody id="customersTable">
+                            <tbody id="projectsTable">
                                 <tr>
-                                    <td>คุณสมชาย ใจดี</td>
+                                    <td>คุณแสมชาย ใจดี</td>
                                     <td>บริษัท เคมีเกษตร จำกัด</td>
                                     <td>ขึ้นทะเบียนปุ๋ย</td>
                                     <td><span class="status-badge status-pending">รอดำเนินการ</span></td>
                                     <td>15/12/2024</td>
                                     <td>
                                         <div class="action-buttons">
-                                            <button class="action-btn btn-success" onclick="viewCustomer(1)">👁️</button>
-                                            <button class="action-btn btn-warning" onclick="editCustomer(1)">✏️</button>
-                                            <button class="action-btn btn-danger" onclick="deleteCustomer(1)">🗑️</button>
+                                            <button class="action-btn btn-success" onclick="viewProject(1)">👁️</button>
+                                            <button class="action-btn btn-warning" onclick="editProject(1)">✏️</button>
+                                            <button class="action-btn btn-danger" onclick="deleteProject(1)">🗑️</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -624,9 +1050,9 @@
                                     <td>10/12/2024</td>
                                     <td>
                                         <div class="action-buttons">
-                                            <button class="action-btn btn-success" onclick="viewCustomer(2)">👁️</button>
-                                            <button class="action-btn btn-warning" onclick="editCustomer(2)">✏️</button>
-                                            <button class="action-btn btn-danger" onclick="deleteCustomer(2)">🗑️</button>
+                                            <button class="action-btn btn-success" onclick="viewProject(2)">👁️</button>
+                                            <button class="action-btn btn-warning" onclick="editProject(2)">✏️</button>
+                                            <button class="action-btn btn-danger" onclick="deleteProject(2)">🗑️</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -655,42 +1081,12 @@
                         </div>
 
                         <div id="pending-tasks" class="tab-content active">
-                            <div style="margin-bottom: 2rem;">
-                                <h4 style="color: #1976d2; margin-bottom: 1rem;">ขั้นตอนการดำเนินงานมาตรฐาน</h4>
-                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
-                                    <div style="background: #e3f2fd; padding: 1rem; border-radius: 8px; border-left: 4px solid #2196f3;">
-                                        <h5 style="color: #1976d2; margin-bottom: 0.5rem;">📋 ขั้นที่ 1: รับเอกสาร</h5>
-                                        <small>รับเอกสารจากลูกค้า ตรวจสอบความครบถ้วน</small>
-                                    </div>
-                                    <div style="background: #fff3e0; padding: 1rem; border-radius: 8px; border-left: 4px solid #ff9800;">
-                                        <h5 style="color: #f57c00; margin-bottom: 0.5rem;">🔍 ขั้นที่ 2: ตรวจสอบ</h5>
-                                        <small>ตรวจสอบเอกสาร วิเคราะห์ข้อมูล</small>
-                                    </div>
-                                    <div style="background: #f3e5f5; padding: 1rem; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                                        <h5 style="color: #7b1fa2; margin-bottom: 0.5rem;">📝 ขั้นที่ 3: จัดทำเอกสาร</h5>
-                                        <small>เตรียมเอกสารยื่นขออนุมัติ</small>
-                                    </div>
-                                    <div style="background: #e8f5e8; padding: 1rem; border-radius: 8px; border-left: 4px solid #4caf50;">
-                                        <h5 style="color: #388e3c; margin-bottom: 0.5rem;">📤 ขั้นที่ 4: ยื่นคำขอ</h5>
-                                        <small>ยื่นคำขอต่อหน่วยงาน</small>
-                                    </div>
-                                    <div style="background: #fce4ec; padding: 1rem; border-radius: 8px; border-left: 4px solid #e91e63;">
-                                        <h5 style="color: #c2185b; margin-bottom: 0.5rem;">⏰ ขั้นที่ 5: ติดตาม</h5>
-                                        <small>ติดตามผลการพิจารณา</small>
-                                    </div>
-                                    <div style="background: #e0f2f1; padding: 1rem; border-radius: 8px; border-left: 4px solid #009688;">
-                                        <h5 style="color: #00695c; margin-bottom: 0.5rem;">✅ ขั้นที่ 6: ส่งมอบ</h5>
-                                        <small>รับใบอนุมัติและส่งมอบลูกค้า</small>
-                                    </div>
-                                </div>
-                            </div>
-
                             <table class="data-table">
                                 <thead>
                                     <tr>
                                         <th>งาน</th>
                                         <th>ลูกค้า</th>
-                                        <th>ขั้นตอนปัจจุบัน</th>
+                                        <th>ประเภท</th>
                                         <th>กำหนดเสร็จ</th>
                                         <th>ระดับความสำคัญ</th>
                                         <th>การจัดการ</th>
@@ -698,39 +1094,14 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>ขึ้นทะเบียนปุ๋ยเคมี</td>
+                                        <td>จัดเตรียมเอกสารขึ้นทะเบียน</td>
                                         <td>บริษัท เคมีเกษตร จำกัด</td>
-                                        <td><span class="status-badge status-pending">ขั้นที่ 2: ตรวจสอบเอกสาร</span></td>
+                                        <td>ขึ้นทะเบียนปุ๋ย</td>
                                         <td>20/12/2024</td>
-                                        <td><span class="status-badge" style="background: #ffebee; color: #c62828;">สูง</span></td>
+                                        <td><span class="status-badge status-pending">สูง</span></td>
                                         <td>
-                                            <button class="action-btn btn-success" onclick="updateTaskStep(1, 3)" title="ไปขั้นถัดไป">⏭️</button>
-                                            <button class="action-btn btn-warning" onclick="viewTaskDetail(1)" title="ดูรายละเอียด">👁️</button>
-                                            <button class="action-btn btn-warning" onclick="editTask(1)" title="แก้ไข">✏️</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>ต่อใบอนุญาตผลิต</td>
-                                        <td>ห้างหุ้นส่วน สารเคมี</td>
-                                        <td><span class="status-badge status-approved">ขั้นที่ 4: ยื่นคำขอแล้ว</span></td>
-                                        <td>25/12/2024</td>
-                                        <td><span class="status-badge" style="background: #fff3e0; color: #e65100;">ปานกลาง</span></td>
-                                        <td>
-                                            <button class="action-btn btn-success" onclick="updateTaskStep(2, 5)" title="ไปขั้นถัดไป">⏭️</button>
-                                            <button class="action-btn btn-warning" onclick="viewTaskDetail(2)" title="ดูรายละเอียด">👁️</button>
-                                            <button class="action-btn btn-warning" onclick="editTask(2)" title="แก้ไข">✏️</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>ขึ้นทะเบียนสารกำจัดแมลง</td>
-                                        <td>บริษัท ABC จำกัด</td>
-                                        <td><span class="status-badge status-pending">ขั้นที่ 1: รอเอกสารเพิ่มเติม</span></td>
-                                        <td>30/12/2024</td>
-                                        <td><span class="status-badge" style="background: #e8f5e8; color: #2e7d32;">ต่ำ</span></td>
-                                        <td>
-                                            <button class="action-btn btn-success" onclick="contactCustomerForDoc(3)" title="ติดต่อขอเอกสาร">📞</button>
-                                            <button class="action-btn btn-warning" onclick="viewTaskDetail(3)" title="ดูรายละเอียด">👁️</button>
-                                            <button class="action-btn btn-warning" onclick="editTask(3)" title="แก้ไข">✏️</button>
+                                            <button class="action-btn btn-success" onclick="completeTask(1)">✅</button>
+                                            <button class="action-btn btn-warning" onclick="editTask(1)">✏️</button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -865,32 +1236,36 @@
         </div>
     </div>
 
-    <!-- Add Customer Modal -->
-    <div id="addCustomerModal" class="modal">
+    <!-- Add Project Modal -->
+    <div id="addProjectModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">เพิ่มลูกค้าใหม่</h3>
-                <button class="close-btn" onclick="closeModal('addCustomerModal')">×</button>
+                <h3 class="modal-title">เพิ่มงานใหม่</h3>
+                <button class="close-btn" onclick="closeModal('addProjectModal')">×</button>
             </div>
-            <form id="addCustomerForm">
+            <form id="addProjectForm">
                 <div class="form-group">
-                    <label class="form-label">ชื่อ-นามสกุล *</label>
-                    <input type="text" class="form-input" name="customerName" required>
+                    <label class="form-label">ชื่อการค้า *</label>
+                    <input type="text" class="form-input" name="tradeName" required placeholder="ชื่อผลิตภัณฑ์หรือแบรนด์">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">บริษัท</label>
-                    <input type="text" class="form-input" name="companyName">
+                    <label class="form-label">ชื่อสามัญ *</label>
+                    <input type="text" class="form-input" name="genericName" required placeholder="ชื่อทางวิทยาศาสตร์หรือสามัญ">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">เบอร์โทรศัพท์ *</label>
-                    <input type="tel" class="form-input" name="phone" required>
+                    <label class="form-label">ลูกค้า/บริษัท *</label>
+                    <input type="text" class="form-input" name="clientName" required placeholder="ชื่อบริษัทหรือลูกค้า">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">เบอร์โทรศัพท์</label>
+                    <input type="tel" class="form-input" name="phone" placeholder="เบอร์ติดต่อ">
                 </div>
                 <div class="form-group">
                     <label class="form-label">อีเมล</label>
-                    <input type="email" class="form-input" name="email">
+                    <input type="email" class="form-input" name="email" placeholder="อีเมลติดต่อ">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">บริการที่สนใจ *</label>
+                    <label class="form-label">บริการที่ขอ *</label>
                     <select class="form-select" name="serviceType" required>
                         <option value="">เลือกบริการ</option>
                         <option value="fertilizer">ขึ้นทะเบียนปุ๋ย</option>
@@ -898,14 +1273,19 @@
                         <option value="hazardous">ขึ้นทะเบียนวัตถุอันตราย</option>
                         <option value="license">ต่อใบอนุญาตผลิต</option>
                         <option value="import">ใบอนุญาตนำเข้า</option>
+                        <option value="renewal">ต่ออายุต่างๆ</option>
                     </select>
                 </div>
                 <div class="form-group">
+                    <label class="form-label">ประเภทผลิตภัณฑ์</label>
+                    <input type="text" class="form-input" name="productType" placeholder="เช่น ปุ๋ยเคมี, สารกำจัดแมลง">
+                </div>
+                <div class="form-group">
                     <label class="form-label">หมายเหตุ</label>
-                    <textarea class="form-textarea" name="notes" placeholder="รายละเอียดเพิ่มเติม"></textarea>
+                    <textarea class="form-textarea" name="notes" placeholder="รายละเอียดเพิ่มเติม สูตร ส่วนประกอบ"></textarea>
                 </div>
                 <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                    <button type="button" class="btn" style="background: #666;" onclick="closeModal('addCustomerModal')">ยกเลิก</button>
+                    <button type="button" class="btn" style="background: #666;" onclick="closeModal('addProjectModal')">ยกเลิก</button>
                     <button type="submit" class="btn btn-success">บันทึก</button>
                 </div>
             </form>
@@ -965,15 +1345,15 @@
         </div>
     </div>
 
-    <!-- Customer Detail Modal -->
-    <div id="customerDetailModal" class="modal">
+    <!-- Project Detail Modal -->
+    <div id="projectDetailModal" class="modal">
         <div class="modal-content" style="max-width: 800px;">
             <div class="modal-header">
-                <h3 class="modal-title">รายละเอียดลูกค้า</h3>
-                <button class="close-btn" onclick="closeModal('customerDetailModal')">×</button>
+                <h3 class="modal-title">รายละเอียดงาน</h3>
+                <button class="close-btn" onclick="closeModal('projectDetailModal')">×</button>
             </div>
-            <div id="customerDetailContent">
-                <!-- Customer detail content will be loaded here -->
+            <div id="projectDetailContent">
+                <!-- Project detail content will be loaded here -->
             </div>
         </div>
     </div>
@@ -1333,261 +1713,24 @@
             }
         }
 
-        // Task Management Functions (Extended)
-        function updateTaskStep(taskId, nextStep) {
-            const stepNames = {
-                1: 'รับเอกสาร',
-                2: 'ตรวจสอบ', 
-                3: 'จัดทำเอกสาร',
-                4: 'ยื่นคำขอ',
-                5: 'ติดตาม',
-                6: 'ส่งมอบ'
-            };
-            
-            if (confirm(`ต้องการย้ายงานไปขั้นที่ ${nextStep}: ${stepNames[nextStep]}?`)) {
-                showNotification(`อัปเดตงานไปขั้นที่ ${nextStep}: ${stepNames[nextStep]} แล้ว`, 'success');
-                
-                // Update dashboard stats
+        // Task Management
+        function completeTask(taskId) {
+            if (confirm('ทำเครื่องหมายงานนี้เป็นเสร็จสิ้น?')) {
+                showNotification('ทำเครื่องหมายงานเสร็จสิ้นแล้ว', 'success');
                 updateDashboardStats();
             }
         }
 
-        function viewTaskDetail(taskId) {
-            const taskDetails = {
-                1: {
-                    title: 'ขึ้นทะเบียนปุ๋ยเคมี',
-                    customer: 'บริษัท เคมีเกษตร จำกัด',
-                    currentStep: 2,
-                    details: 'รอตรวจสอบเอกสารสูตรปุ๋ยและรายงานการทดสอบ',
-                    documents: ['ใบคำขอ', 'สูตรปุ๋ย', 'รายงานผลทดสอบ'],
-                    nextAction: 'ส่งเอกสารไปทดสอบเพิ่มเติม',
-                    deadline: '20/12/2024'
-                },
-                2: {
-                    title: 'ต่อใบอนุญาตผลิต',
-                    customer: 'ห้างหุ้นส่วน สารเคมี', 
-                    currentStep: 4,
-                    details: 'ยื่นคำขอต่ออายุแล้ว รอผลจากกรมวิชาการเกษตร',
-                    documents: ['ใบอนุญาตเดิม', 'ใบคำขอต่ออายุ', 'หลักฐานการชำระค่าธรรมเนียม'],
-                    nextAction: 'ติดตามผลกับเจ้าหน้าที่ กษ.',
-                    deadline: '25/12/2024'
-                }
-            };
-            
-            const task = taskDetails[taskId];
-            if (!task) return;
-            
-            const stepNames = ['', 'รับเอกสาร', 'ตรวจสอบ', 'จัดทำเอกสาร', 'ยื่นคำขอ', 'ติดตาม', 'ส่งมอบ'];
-            
-            const detailContent = `
-                <div style="padding: 1rem;">
-                    <h4 style="color: #1976d2; margin-bottom: 1rem;">${task.title}</h4>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
-                        <div><strong>ลูกค้า:</strong> ${task.customer}</div>
-                        <div><strong>กำหนดเสร็จ:</strong> ${task.deadline}</div>
-                        <div><strong>ขั้นตอนปัจจุบัน:</strong> ขั้นที่ ${task.currentStep}: ${stepNames[task.currentStep]}</div>
-                        <div><strong>การดำเนินการต่อไป:</strong> ${task.nextAction}</div>
-                    </div>
-                    
-                    <div style="margin-bottom: 2rem;">
-                        <h5 style="color: #1976d2; margin-bottom: 0.5rem;">รายละเอียด:</h5>
-                        <p>${task.details}</p>
-                    </div>
-                    
-                    <div style="margin-bottom: 2rem;">
-                        <h5 style="color: #1976d2; margin-bottom: 0.5rem;">เอกสารที่เกี่ยวข้อง:</h5>
-                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-                            ${task.documents.map(doc => `<span style="background: #e3f2fd; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">📄 ${doc}</span>`).join('')}
-                        </div>
-                    </div>
-                    
-                    <div style="margin-bottom: 2rem;">
-                        <h5 style="color: #1976d2; margin-bottom: 0.5rem;">ความคืบหน้า:</h5>
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                            ${Array.from({length: 6}, (_, i) => {
-                                const step = i + 1;
-                                const isCompleted = step < task.currentStep;
-                                const isCurrent = step === task.currentStep;
-                                const color = isCompleted ? '#4caf50' : isCurrent ? '#ff9800' : '#ddd';
-                                return `<div style="width: 30px; height: 30px; border-radius: 50%; background: ${color}; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">${step}</div>`;
-                            }).join('')}
-                        </div>
-                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #666;">
-                            <span>รับเอกสาร</span>
-                            <span>ตรวจสอบ</span>
-                            <span>จัดทำ</span>
-                            <span>ยื่นขอ</span>
-                            <span>ติดตาม</span>
-                            <span>ส่งมอบ</span>
-                        </div>
-                    </div>
-
-                    ${task.currentStep >= 5 ? `
-                    <div style="margin-bottom: 2rem; background: #fff3e0; padding: 1rem; border-radius: 8px; border-left: 4px solid #ff9800;">
-                        <h5 style="color: #f57c00; margin-bottom: 1rem;">📸 หลักฐานการติดตามผล</h5>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
-                            <div style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
-                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='100' viewBox='0 0 150 100'%3E%3Crect width='150' height='100' fill='%23f0f0f0'/%3E%3Ctext x='75' y='50' text-anchor='middle' fill='%23666' font-size='12'%3E📄 ใบรับคำขอ%3C/text%3E%3C/svg%3E" style="width: 100%; height: 100px; object-fit: cover;">
-                                <div style="padding: 0.5rem; font-size: 0.8rem; text-align: center;">ใบรับยื่นคำขอ</div>
-                            </div>
-                            <div style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
-                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='100' viewBox='0 0 150 100'%3E%3Crect width='150' height='100' fill='%23e3f2fd'/%3E%3Ctext x='75' y='50' text-anchor='middle' fill='%23666' font-size='12'%3E🏢 สำนักงาน กษ.%3C/text%3E%3C/svg%3E" style="width: 100%; height: 100px; object-fit: cover;">
-                                <div style="padding: 0.5rem; font-size: 0.8rem; text-align: center;">หน้าสำนักงาน กษ.</div>
-                            </div>
-                            <div style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
-                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='100' viewBox='0 0 150 100'%3E%3Crect width='150' height='100' fill='%23e8f5e8'/%3E%3Ctext x='75' y='50' text-anchor='middle' fill='%23666' font-size='10'%3E📞 ติดต่อเจ้าหน้าที่%3C/text%3E%3C/svg%3E" style="width: 100%; height: 100px; object-fit: cover;">
-                                <div style="padding: 0.5rem; font-size: 0.8rem; text-align: center;">การติดต่อประสานงาน</div>
-                            </div>
-                        </div>
-                        <div style="display: flex; gap: 0.5rem;">
-                            <button class="btn" style="padding: 0.5rem 1rem; font-size: 0.9rem;" onclick="uploadProgressPhoto(${taskId})">📸 เพิ่มรูปความคืบหน้า</button>
-                            <button class="btn btn-success" style="padding: 0.5rem 1rem; font-size: 0.9rem;" onclick="shareProgressWithCustomer(${taskId})">📤 ส่งให้ลูกค้าดู</button>
-                        </div>
-                    </div>
-                    ` : ''}
-                    
-                    <div style="display: flex; gap: 1rem; justify-content: center;">
-                        <button class="btn btn-success" onclick="updateTaskStep(${taskId}, ${task.currentStep + 1}); closeModal('customerDetailModal');">
-                            ไปขั้นถัดไป: ${stepNames[task.currentStep + 1] || 'เสร็จสิ้น'}
-                        </button>
-                        <button class="btn btn-warning" onclick="contactCustomerForUpdate(${taskId})">
-                            แจ้งลูกค้า
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('customerDetailContent').innerHTML = detailContent;
-            openModal('customerDetailModal');
+        function editTask(taskId) {
+            showNotification('ฟีเจอร์แก้ไขงาน - กำลังพัฒนา', 'warning');
         }
 
-        function contactCustomerForDoc(taskId) {
-            const phoneNumber = '0843752399'; // หมายเลขของคุณ
-            const message = 'สวัสดีครับ เรื่องการขึ้นทะเบียนของท่าน ขณะนี้เราต้องการเอกสารเพิ่มเติมครับ รบกวนติดต่อกลับด้วยนะครับ';
-            
-            // เปิด Line หรือโทรศัพท์
-            if (confirm('ต้องการติดต่อลูกค้าผ่านช่องทางไหน?\n\nOK = โทรศัพท์\nCancel = Line')) {
-                window.location.href = `tel:${phoneNumber}`;
-            } else {
-                // เปิด Line (ต้องแก้ให้เหมาะกับระบบ Line ของคุณ)
-                showNotification('เปิดระบบ Line เพื่อติดต่อลูกค้า', 'success');
-            }
+        function renewLicense(licenseId) {
+            showNotification('เริ่มกระบวนการต่ออายุใบอนุญาต', 'success');
         }
 
-        function uploadProgressPhoto(taskId) {
-            // สร้าง modal สำหรับอัปโหลดรูปความคืบหน้า
-            const uploadModal = document.createElement('div');
-            uploadModal.className = 'modal active';
-            uploadModal.innerHTML = `
-                <div class="modal-content" style="max-width: 500px;">
-                    <div class="modal-header">
-                        <h3 class="modal-title">📸 เพิ่มรูปความคืบหน้า</h3>
-                        <button class="close-btn" onclick="this.closest('.modal').remove()">×</button>
-                    </div>
-                    <div style="padding: 1rem;">
-                        <div class="form-group">
-                            <label class="form-label">ประเภทหลักฐาน</label>
-                            <select class="form-select" id="photoType">
-                                <option value="receipt">ใบรับคำขอ</option>
-                                <option value="office">หน้าสำนักงานที่ติดตาม</option>
-                                <option value="meeting">การประชุม/ประสานงาน</option>
-                                <option value="document">เอกสารเพิ่มเติม</option>
-                                <option value="other">อื่นๆ</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">คำอธิบาย</label>
-                            <input type="text" class="form-input" id="photoDescription" placeholder="อธิบายรูปนี้">
-                        </div>
-                        <div class="form-group">
-                            <div class="file-upload" onclick="document.getElementById('progressPhotoInput').click()" style="cursor: pointer;">
-                                <div style="font-size: 3rem; margin-bottom: 1rem;">📷</div>
-                                <div>คลิกเพื่อเลือกรูปภาพ</div>
-                                <small style="color: #666;">รองรับ: JPG, PNG (ขนาดไม่เกิน 5MB)</small>
-                            </div>
-                            <input type="file" id="progressPhotoInput" style="display: none;" accept="image/*">
-                        </div>
-                        <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
-                            <button class="btn" style="background: #666;" onclick="this.closest('.modal').remove()">ยกเลิก</button>
-                            <button class="btn btn-success" onclick="saveProgressPhoto(${taskId}); this.closest('.modal').remove();">บันทึกรูป</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(uploadModal);
-        }
-
-        function saveProgressPhoto(taskId) {
-            const photoType = document.getElementById('photoType').value;
-            const description = document.getElementById('photoDescription').value;
-            const fileInput = document.getElementById('progressPhotoInput');
-            
-            if (!fileInput.files[0]) {
-                showNotification('กรุณาเลือกรูปภาพ', 'error');
-                return;
-            }
-
-            // จำลองการบันทึกรูป
-            showNotification('บันทึกรูปความคืบหน้าสำเร็จ', 'success');
-            
-            // อัปเดต UI ให้แสดงรูปใหม่
-            setTimeout(() => {
-                showNotification('รูปถูกเพิ่มในประวัติความคืบหน้าแล้ว', 'success');
-            }, 1000);
-        }
-
-        function shareProgressWithCustomer(taskId) {
-            // ตัวเลือกการส่งให้ลูกค้า
-            const shareModal = document.createElement('div');
-            shareModal.className = 'modal active';
-            shareModal.innerHTML = `
-                <div class="modal-content" style="max-width: 400px;">
-                    <div class="modal-header">
-                        <h3 class="modal-title">📤 ส่งรูปให้ลูกค้า</h3>
-                        <button class="close-btn" onclick="this.closest('.modal').remove()">×</button>
-                    </div>
-                    <div style="padding: 1rem;">
-                        <p style="margin-bottom: 1.5rem;">เลือกช่องทางการส่งรูปความคืบหน้าให้ลูกค้า:</p>
-                        <div style="display: flex; flex-direction: column; gap: 1rem;">
-                            <button class="btn" onclick="sendViaLine(${taskId}); this.closest('.modal').remove();">
-                                💬 ส่งผ่าน Line
-                            </button>
-                            <button class="btn" onclick="sendViaEmail(${taskId}); this.closest('.modal').remove();">
-                                📧 ส่งผ่านอีเมล
-                            </button>
-                            <button class="btn" onclick="generateShareLink(${taskId}); this.closest('.modal').remove();">
-                                🔗 สร้างลิงก์แชร์
-                            </button>
-                        </div>
-                        <div style="text-align: center; margin-top: 1rem;">
-                            <button class="btn" style="background: #666;" onclick="this.closest('.modal').remove()">ยกเลิก</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(shareModal);
-        }
-
-        function sendViaLine(taskId) {
-            const message = 'สวัสดีครับ! แจ้งความคืบหน้าการดำเนินงานของท่าน ขณะนี้เราได้ไปติดตามที่หน่วยงานแล้ว มีรูปประกอบส่งให้ดูครับ';
-            showNotification('เปิด Line เพื่อส่งรูปให้ลูกค้า', 'success');
-            
-            // เปิด Line OA
-            window.open('https://line.me/R/ti/p/@991cyisb', '_blank');
-        }
-
-        function sendViaEmail(taskId) {
-            const subject = 'แจ้งความคืบหน้า - การขึ้นทะเบียน';
-            const body = 'เรียนลูกค้า%0A%0Aแจ้งความคืบหน้าการดำเนินงาน ขณะนี้เราได้ไปติดตามที่หน่วยงานแล้ว%0Aมีรูปประกอบแนบมาด้วย%0A%0Aขอบคุณครับ';
-            window.location.href = `mailto:?subject=${subject}&body=${body}`;
-        }
-
-        function generateShareLink(taskId) {
-            const shareUrl = `https://yourdomain.com/progress/${taskId}`;
-            navigator.clipboard.writeText(shareUrl).then(() => {
-                showNotification('คัดลอกลิงก์แชร์แล้ว ส่งให้ลูกค้าได้เลย', 'success');
-            });
+        function contactCustomer(customerId) {
+            showNotification('เปิดระบบติดต่อลูกค้า', 'success');
         }
 
         // Utility Functions
