@@ -9,344 +9,182 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
-            color: #333;
+            background: #f5f7fa; color: #333;
         }
 
         .header {
             background: linear-gradient(135deg, #1976d2, #2196f3);
-            color: white;
-            padding: 1rem 0;
+            color: white; padding: 1rem 0;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
         .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            max-width: 1400px; margin: 0 auto; padding: 0 2rem;
+            display: flex; justify-content: space-between; align-items: center;
         }
 
         .logo { font-size: 1.5rem; font-weight: bold; }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+        .user-info { display: flex; align-items: center; gap: 1rem; }
 
-        .container {
-            max-width: 1400px;
-            margin: 2rem auto;
-            padding: 0 2rem;
-        }
+        .container { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; }
 
         .dashboard-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem; margin-bottom: 2rem;
         }
 
         .stat-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            text-align: center;
+            background: white; padding: 2rem; border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center;
             transition: transform 0.3s;
         }
 
         .stat-card:hover { transform: translateY(-5px); }
-
         .stat-icon { font-size: 3rem; margin-bottom: 1rem; }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #1976d2;
-            margin-bottom: 0.5rem;
-        }
-
+        .stat-number { font-size: 2.5rem; font-weight: bold; color: #1976d2; margin-bottom: 0.5rem; }
         .stat-label { color: #666; font-size: 1.1rem; }
 
-        .main-content {
-            display: grid;
-            grid-template-columns: 250px 1fr;
-            gap: 2rem;
-        }
+        .main-content { display: grid; grid-template-columns: 250px 1fr; gap: 2rem; }
 
         .sidebar {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            height: fit-content;
-            overflow: hidden;
+            background: white; border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); height: fit-content; overflow: hidden;
         }
 
-        .sidebar-header {
-            background: #1976d2;
-            color: white;
-            padding: 1.5rem;
-            font-weight: bold;
-        }
-
+        .sidebar-header { background: #1976d2; color: white; padding: 1.5rem; font-weight: bold; }
         .sidebar-menu { list-style: none; }
-
         .sidebar-menu li { border-bottom: 1px solid #eee; }
 
         .sidebar-menu a {
-            display: block;
-            padding: 1rem 1.5rem;
-            color: #333;
-            text-decoration: none;
-            transition: all 0.3s;
+            display: block; padding: 1rem 1.5rem; color: #333;
+            text-decoration: none; transition: all 0.3s;
         }
 
-        .sidebar-menu a:hover,
-        .sidebar-menu a.active {
-            background: #e3f2fd;
-            color: #1976d2;
-            padding-left: 2rem;
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: #e3f2fd; color: #1976d2; padding-left: 2rem;
         }
 
         .content-area {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            overflow: hidden;
+            background: white; border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden;
         }
 
         .content-header {
-            background: #f8f9fa;
-            padding: 1.5rem 2rem;
-            border-bottom: 1px solid #ddd;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            background: #f8f9fa; padding: 1.5rem 2rem; border-bottom: 1px solid #ddd;
+            display: flex; justify-content: space-between; align-items: center;
         }
 
-        .content-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #333;
-        }
+        .content-title { font-size: 1.5rem; font-weight: bold; color: #333; }
 
         .btn {
-            background: #1976d2;
-            color: white;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
+            background: #1976d2; color: white; border: none; padding: 0.8rem 1.5rem;
+            border-radius: 8px; cursor: pointer; font-size: 1rem; transition: all 0.3s;
+            display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none;
         }
 
-        .btn:hover {
-            background: #1565c0;
-            transform: translateY(-2px);
-            color: white;
-        }
-
-        .btn-success { background: #4caf50; }
-        .btn-success:hover { background: #388e3c; }
-        
-        .btn-warning { background: #ff9800; }
-        .btn-warning:hover { background: #f57c00; }
-        
-        .btn-danger { background: #f44336; }
-        .btn-danger:hover { background: #d32f2f; }
+        .btn:hover { background: #1565c0; transform: translateY(-2px); color: white; }
+        .btn-success { background: #4caf50; } .btn-success:hover { background: #388e3c; }
+        .btn-warning { background: #ff9800; } .btn-warning:hover { background: #f57c00; }
+        .btn-danger { background: #f44336; } .btn-danger:hover { background: #d32f2f; }
 
         .content-body { padding: 2rem; }
 
+        .service-categories { margin-bottom: 2rem; }
+
+        .category-card {
+            background: white; border: 2px solid #e3f2fd; border-radius: 12px;
+            padding: 1.5rem; cursor: pointer; transition: all 0.3s;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
         .search-bar {
-            margin-bottom: 2rem;
-            display: flex;
-            gap: 1rem;
-            align-items: center;
+            margin-bottom: 2rem; display: flex; gap: 1rem; align-items: center;
         }
 
         .search-input {
-            flex: 1;
-            padding: 0.8rem;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
+            flex: 1; padding: 0.8rem; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem;
         }
 
-        .search-input:focus {
-            outline: none;
-            border-color: #1976d2;
-        }
+        .search-input:focus { outline: none; border-color: #1976d2; }
 
         .filter-select {
-            padding: 0.8rem;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            min-width: 150px;
+            padding: 0.8rem; border: 2px solid #ddd; border-radius: 8px;
+            font-size: 1rem; min-width: 150px;
         }
 
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+
+        .data-table th, .data-table td {
+            padding: 1rem; text-align: left; border-bottom: 1px solid #eee;
         }
 
-        .data-table th,
-        .data-table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-
-        .data-table th {
-            background: #f8f9fa;
-            font-weight: bold;
-            color: #333;
-        }
-
+        .data-table th { background: #f8f9fa; font-weight: bold; color: #333; }
         .data-table tr:hover { background: #f5f5f5; }
 
         .status-badge {
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: bold;
+            padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.9rem; font-weight: bold;
         }
 
-        .status-pending {
-            background: #fff3e0;
-            color: #e65100;
-        }
-
-        .status-approved {
-            background: #e8f5e8;
-            color: #2e7d32;
-        }
-
-        .status-rejected {
-            background: #ffebee;
-            color: #c62828;
-        }
+        .status-pending { background: #fff3e0; color: #e65100; }
+        .status-approved { background: #e8f5e8; color: #2e7d32; }
+        .status-rejected { background: #ffebee; color: #c62828; }
 
         .action-buttons { display: flex; gap: 0.5rem; }
 
         .action-btn {
-            padding: 0.3rem 0.8rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s;
+            padding: 0.3rem 0.8rem; border: none; border-radius: 5px;
+            cursor: pointer; font-size: 0.9rem; transition: all 0.3s;
         }
 
         .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 1000;
         }
 
-        .modal.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        .modal.active { display: flex; align-items: center; justify-content: center; }
 
         .modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 600px;
-            max-height: 80vh;
-            overflow-y: auto;
+            background: white; padding: 2rem; border-radius: 12px; width: 90%;
+            max-width: 600px; max-height: 80vh; overflow-y: auto;
         }
 
         .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #eee;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #eee;
         }
 
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
+        .modal-title { font-size: 1.5rem; font-weight: bold; }
 
         .close-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #666;
+            background: none; border: none; font-size: 1.5rem;
+            cursor: pointer; color: #666;
         }
 
         .form-group { margin-bottom: 1.5rem; }
 
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-            color: #333;
+        .form-label { display: block; margin-bottom: 0.5rem; font-weight: bold; color: #333; }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%; padding: 0.8rem; border: 2px solid #ddd;
+            border-radius: 8px; font-size: 1rem;
         }
 
-        .form-input,
-        .form-select,
-        .form-textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none; border-color: #1976d2;
         }
 
-        .form-input:focus,
-        .form-select:focus,
-        .form-textarea:focus {
-            outline: none;
-            border-color: #1976d2;
-        }
-
-        .form-textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
+        .form-textarea { resize: vertical; min-height: 100px; }
 
         .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            color: white;
-            font-weight: bold;
-            z-index: 1001;
-            opacity: 0;
-            transform: translateX(100%);
-            transition: all 0.3s;
+            position: fixed; top: 20px; right: 20px; padding: 1rem 1.5rem;
+            border-radius: 8px; color: white; font-weight: bold; z-index: 1001;
+            opacity: 0; transform: translateX(100%); transition: all 0.3s;
         }
 
-        .notification.show {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
+        .notification.show { opacity: 1; transform: translateX(0); }
         .notification.success { background: #4caf50; }
         .notification.error { background: #f44336; }
         .notification.warning { background: #ff9800; }
@@ -354,60 +192,28 @@
         .section { display: none; }
         .section.active { display: block; }
 
-        .tab-buttons {
-            display: flex;
-            border-bottom: 2px solid #eee;
-            margin-bottom: 2rem;
-        }
+        .tab-buttons { display: flex; border-bottom: 2px solid #eee; margin-bottom: 2rem; }
 
         .tab-btn {
-            padding: 1rem 2rem;
-            border: none;
-            background: none;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s;
-            border-bottom: 3px solid transparent;
+            padding: 1rem 2rem; border: none; background: none; cursor: pointer;
+            font-size: 1rem; transition: all 0.3s; border-bottom: 3px solid transparent;
         }
 
-        .tab-btn.active {
-            color: #1976d2;
-            border-bottom-color: #1976d2;
-            font-weight: bold;
-        }
+        .tab-btn.active { color: #1976d2; border-bottom-color: #1976d2; font-weight: bold; }
 
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
         .alert {
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 8px;
-            border-left: 4px solid;
+            padding: 1rem; margin-bottom: 1rem; border-radius: 8px; border-left: 4px solid;
         }
 
-        .alert-warning {
-            background: #fff3e0;
-            border-color: #ff9800;
-            color: #e65100;
-        }
-
-        .alert-info {
-            background: #e3f2fd;
-            border-color: #2196f3;
-            color: #0d47a1;
-        }
+        .alert-warning { background: #fff3e0; border-color: #ff9800; color: #e65100; }
+        .alert-info { background: #e3f2fd; border-color: #2196f3; color: #0d47a1; }
 
         @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            .dashboard-stats {
-                grid-template-columns: 1fr;
-            }
-
+            .main-content { grid-template-columns: 1fr; gap: 1rem; }
+            .dashboard-stats { grid-template-columns: 1fr; }
             .container { padding: 0 1rem; }
         }
     </style>
@@ -459,310 +265,80 @@
             </div>
 
             <div class="content-area">
-                <!-- Projects Section -->
                 <div id="projects-section" class="section active">
                     <div class="content-header">
                         <h2 class="content-title">จัดการงานทั้งหมด</h2>
                         <button class="btn" onclick="openModal('addProjectModal')">เพิ่มงานใหม่</button>
                     </div>
                     <div class="content-body">
+                        <div class="service-categories">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+                                <div class="category-card" onclick="filterByService('fertilizer')" style="border-color: #e3f2fd;">
+                                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🌱</div>
+                                    <h4 style="color: #1976d2; margin-bottom: 0.5rem;">ขึ้นทะเบียนปุ๋ย</h4>
+                                    <div style="font-size: 0.9rem; color: #666;">ปุ๋ยเคมี, ปุ๋ยอินทรีย์, ปุ๋ยชีวภาพ</div>
+                                    <div style="background: #e3f2fd; color: #1976d2; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.8rem; font-weight: bold; margin-top: 0.5rem; display: inline-block;">12 งาน</div>
+                                </div>
+                                
+                                <div class="category-card" onclick="filterByService('hazardous')" style="border-color: #fff3e0;">
+                                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚠️</div>
+                                    <h4 style="color: #ff9800; margin-bottom: 0.5rem;">วัตถุอันตรายทางการเกษตร</h4>
+                                    <div style="font-size: 0.9rem; color: #666;">สารเคมีเกษตร, สารป้องกันกำจัดศัตรูพืช</div>
+                                    <div style="background: #fff3e0; color: #ff9800; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.8rem; font-weight: bold; margin-top: 0.5rem; display: inline-block;">8 งาน</div>
+                                </div>
+
+                                <div class="category-card" onclick="filterByService('production-license')" style="border-color: #e8f5e8;">
+                                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🏭</div>
+                                    <h4 style="color: #4caf50; margin-bottom: 0.5rem;">ต่อใบอนุญาตผลิต</h4>
+                                    <div style="font-size: 0.9rem; color: #666;">ใบอนุญาตผลิตปุ๋ย, สารเคมีเกษตร</div>
+                                    <div style="background: #e8f5e8; color: #4caf50; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.8rem; font-weight: bold; margin-top: 0.5rem; display: inline-block;">6 งาน</div>
+                                </div>
+
+                                <div class="category-card" onclick="filterByService('import-license')" style="border-color: #e0f2f1;">
+                                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🌐</div>
+                                    <h4 style="color: #009688; margin-bottom: 0.5rem;">ต่อใบอนุญาตนำเข้า</h4>
+                                    <div style="font-size: 0.9rem; color: #666;">ใบอนุญาตนำเข้าปุ๋ย, วัตถุอันตราย</div>
+                                    <div style="background: #e0f2f1; color: #009688; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.8rem; font-weight: bold; margin-top: 0.5rem; display: inline-block;">4 งาน</div>
+                                </div>
+
+                                <div class="category-card" onclick="filterByService('possession-renewal')" style="border-color: #fff8e1;">
+                                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">📋</div>
+                                    <h4 style="color: #ffc107; margin-bottom: 0.5rem;">ต่ออายุครอบครอง</h4>
+                                    <div style="font-size: 0.9rem; color: #666;">ต่ออายุครอบครองวัตถุอันตราย</div>
+                                    <div style="background: #fff8e1; color: #ffc107; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.8rem; font-weight: bold; margin-top: 0.5rem; display: inline-block;">7 งาน</div>
+                                </div>
+
+                                <div class="category-card" onclick="filterByService('sales-license')" style="border-color: #ffebee;">
+                                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🏪</div>
+                                    <h4 style="color: #f44336; margin-bottom: 0.5rem;">ต่ออายุใบอนุญาตขายปุ๋ย</h4>
+                                    <div style="font-size: 0.9rem; color: #666;">ใบอนุญาตขายปุ๋ยเคมี, อินทรีย์</div>
+                                    <div style="background: #ffebee; color: #f44336; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.8rem; font-weight: bold; margin-top: 0.5rem; display: inline-block;">5 งาน</div>
+                                </div>
+
+                                <div class="category-card" onclick="filterByService('all')" style="background: linear-gradient(135deg, #1976d2, #2196f3); color: white; border-color: #1976d2;">
+                                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">📊</div>
+                                    <h4 style="color: white; margin-bottom: 0.5rem;">ดูงานทั้งหมด</h4>
+                                    <div style="font-size: 0.9rem; color: rgba(255,255,255,0.8);">รวมงานทุกประเภท</div>
+                                    <div style="background: rgba(255,255,255,0.2); color: white; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.8rem; font-weight: bold; margin-top: 0.5rem; display: inline-block;">42 งาน</div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="search-bar">
                             <input type="text" class="search-input" placeholder="ค้นหางาน..." id="projectSearch">
                             <select class="filter-select" id="projectFilter">
-                                <option value="import">ใบอนุญาตนำเข้า</option>
-                        <option value="renewal">ต่ออายุต่างๆ</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">หมายเหตุ</label>
-                    <textarea class="form-textarea" name="notes" placeholder="รายละเอียดเพิ่มเติม สูตร ส่วนประกอบ"></textarea>
-                </div>
-                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                    <button type="button" class="btn" style="background: #666;" onclick="closeModal('addProjectModal')">ยกเลิก</button>
-                    <button type="submit" class="btn btn-success">บันทึก</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Upload Document Modal -->
-    <div id="uploadDocumentModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">อัปโหลดเอกสาร</h3>
-                <button class="close-btn" onclick="closeModal('uploadDocumentModal')">&times;</button>
-            </div>
-            <form id="uploadDocumentForm">
-                <div class="form-group">
-                    <label class="form-label">เลือกงาน *</label>
-                    <select class="form-select" name="projectId" required>
-                        <option value="">เลือกงาน</option>
-                        <option value="1">SuperGrow Plus - ปุ๋ยเคมี</option>
-                        <option value="2">BugKill Pro - สารกำจัดแมลง</option>
-                        <option value="3">GreenShield - สารป้องกันโรคพืช</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">ประเภทเอกสาร *</label>
-                    <select class="form-select" name="documentType" required>
-                        <option value="">เลือกประเภท</option>
-                        <option value="certificate">ใบสำคัญการขึ้นทะเบียน</option>
-                        <option value="application">ใบคำขอ</option>
-                        <option value="test-report">รายงานผลการทดสอบ</option>
-                        <option value="license">ใบอนุญาต</option>
-                        <option value="other">อื่นๆ</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">ชื่อเอกสาร</label>
-                    <input type="text" class="form-input" name="documentName" placeholder="ระบุชื่อเอกสาร">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">อัปโหลดไฟล์</label>
-                    <div style="border: 2px dashed #ddd; border-radius: 8px; padding: 2rem; text-align: center; cursor: pointer;" onclick="document.getElementById('fileInput').click()">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">📁</div>
-                        <div>คลิกเพื่อเลือกไฟล์หรือลากไฟล์มาวางที่นี่</div>
-                        <small style="color: #666;">รองรับ: PDF, DOC, DOCX, JPG, PNG (ขนาดไม่เกิน 10MB)</small>
-                        <input type="file" id="fileInput" style="display: none;" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">หมายเหตุ</label>
-                    <textarea class="form-textarea" name="documentNotes" placeholder="รายละเอียดเพิ่มเติม"></textarea>
-                </div>
-                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                    <button type="button" class="btn" style="background: #666;" onclick="closeModal('uploadDocumentModal')">ยกเลิก</button>
-                    <button type="submit" class="btn btn-success">อัปโหลด</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Project Detail Modal -->
-    <div id="projectDetailModal" class="modal">
-        <div class="modal-content" style="max-width: 800px;">
-            <div class="modal-header">
-                <h3 class="modal-title">รายละเอียดงาน</h3>
-                <button class="close-btn" onclick="closeModal('projectDetailModal')">&times;</button>
-            </div>
-            <div id="projectDetailContent"></div>
-        </div>
-    </div>
-
-    <!-- Notification -->
-    <div id="notification" class="notification"></div>
-
-    <script>
-        let currentSection = 'projects';
-
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('ระบบจัดการงานเริ่มทำงาน');
-        });
-
-        function showSection(sectionName) {
-            document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            document.getElementById(sectionName + '-section').classList.add('active');
-            currentSection = sectionName;
-        }
-
-        function showTab(tabName) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            
-            document.getElementById(tabName).classList.add('active');
-        }
-
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-            const form = document.querySelector(`#${modalId} form`);
-            if (form) form.reset();
-        }
-
-        document.getElementById('addProjectForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            
-            const projectData = {
-                tradeName: formData.get('tradeName'),
-                genericName: formData.get('genericName'),
-                client: formData.get('clientName'),
-                serviceType: formData.get('serviceType'),
-                notes: formData.get('notes'),
-                status: 'pending',
-                dateCreated: new Date().toLocaleDateString('th-TH')
-            };
-
-            addProjectToTable(projectData);
-            closeModal('addProjectModal');
-            showNotification('เพิ่มงานใหม่สำเร็จ', 'success');
-        });
-
-        function addProjectToTable(projectData) {
-            const tableBody = document.getElementById('projectsTable');
-            const row = document.createElement('tr');
-            
-            const serviceNames = {
-                fertilizer: 'ขึ้นทะเบียนปุ๋ย',
-                chemical: 'ขึ้นทะเบียนสารเคมี',
-                hazardous: 'ขึ้นทะเบียนวัตถุอันตราย',
-                license: 'ต่อใบอนุญาตผลิต',
-                import: 'ใบอนุญาตนำเข้า',
-                renewal: 'ต่ออายุต่างๆ'
-            };
-            
-            row.innerHTML = `
-                <td>${projectData.tradeName}</td>
-                <td>${projectData.genericName}</td>
-                <td>${serviceNames[projectData.serviceType] || projectData.serviceType}</td>
-                <td><span class="status-badge status-pending">รอดำเนินการ</span></td>
-                <td>${projectData.dateCreated}</td>
-                <td>
-                    <div class="action-buttons">
-                        <button class="action-btn btn-success" onclick="viewProject(${Date.now()})">ดู</button>
-                        <button class="action-btn btn-warning" onclick="editProject(${Date.now()})">แก้ไข</button>
-                        <button class="action-btn btn-danger" onclick="deleteProject(${Date.now()})">ลบ</button>
-                    </div>
-                </td>
-            `;
-            
-            tableBody.appendChild(row);
-        }
-
-        function viewProject(projectId) {
-            const projectDetail = `
-                <div style="padding: 1rem;">
-                    <h4 style="margin-bottom: 1rem; color: #1976d2;">ข้อมูลงาน</h4>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
-                        <div><strong>ชื่อการค้า:</strong> SuperGrow Plus</div>
-                        <div><strong>ชื่อสามัญ:</strong> NPK 15-15-15</div>
-                        <div><strong>ลูกค้า:</strong> บริษัท เคมีเกษตร จำกัด</div>
-                        <div><strong>บริการ:</strong> ขึ้นทะเบียนปุ๋ย</div>
-                        <div><strong>สถานะ:</strong> <span class="status-badge status-pending">รอดำเนินการ</span></div>
-                    </div>
-                    
-                    <h4 style="margin-bottom: 1rem; color: #1976d2;">ประวัติการทำงาน</h4>
-                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
-                        <div>📋 15/12/2024 - สร้างงานใหม่</div>
-                        <div>📝 16/12/2024 - รับเอกสารเบื้องต้น</div>
-                        <div>🧪 17/12/2024 - ส่งตัวอย่างไปทดสอบ</div>
-                        <div>⏰ รอผลการทดสอบจากห้องปฏิบัติการ</div>
-                    </div>
-                    
-                    <h4 style="margin-bottom: 1rem; color: #1976d2;">เอกสารที่เกี่ยวข้อง</h4>
-                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                            <span>📄 ใบคำขอขึ้นทะเบียนปุ๋ย</span>
-                            <button class="btn" style="padding: 0.3rem 0.8rem; font-size: 0.9rem;">ดาวน์โหลด</button>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span>📋 รายละเอียดส่วนประกอบ</span>
-                            <button class="btn" style="padding: 0.3rem 0.8rem; font-size: 0.9rem;">ดาวน์โหลด</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('projectDetailContent').innerHTML = projectDetail;
-            openModal('projectDetailModal');
-        }
-
-        function editProject(projectId) {
-            showNotification('ฟีเจอร์แก้ไขข้อมูลงาน - กำลังพัฒนา', 'warning');
-        }
-
-        function deleteProject(projectId) {
-            if (confirm('แน่ใจหรือไม่ที่จะลบงานนี้?')) {
-                showNotification('ลบงานสำเร็จ', 'success');
-            }
-        }
-
-        function completeTask(taskId) {
-            if (confirm('ทำเครื่องหมายงานนี้เป็นเสร็จสิ้น?')) {
-                showNotification('ทำเครื่องหมายงานเสร็จสิ้นแล้ว', 'success');
-            }
-        }
-
-        function editTask(taskId) {
-            showNotification('ฟีเจอร์แก้ไขงาน - กำลังพัฒนา', 'warning');
-        }
-
-        function renewLicense(licenseId) {
-            showNotification('เริ่มกระบวนการต่ออายุใบอนุญาต', 'success');
-        }
-
-        function contactCustomer(customerId) {
-            showNotification('เปิดระบบติดต่อลูกค้า', 'success');
-        }
-
-        function downloadDocument(docId) {
-            showNotification('เริ่มการดาวน์โหลด...', 'success');
-        }
-
-        function shareDocument(docId) {
-            const shareUrl = `https://yourdomain.com/share/doc/${docId}`;
-            navigator.clipboard.writeText(shareUrl).then(() => {
-                showNotification('คัดลอกลิงก์แชร์แล้ว', 'success');
-            });
-        }
-
-        function deleteDocument(docId) {
-            if (confirm('แน่ใจหรือไม่ที่จะลบเอกสารนี้?')) {
-                showNotification('ลบเอกสารสำเร็จ', 'success');
-            }
-        }
-
-        function exportData() {
-            showNotification('ส่งออกข้อมูลสำเร็จ', 'success');
-        }
-
-        function showNotification(message, type = 'success') {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.className = `notification ${type} show`;
-
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-
-        function logout() {
-            if (confirm('แน่ใจหรือไม่ที่จะออกจากระบบ?')) {
-                showNotification('ออกจากระบบสำเร็จ', 'success');
-            }
-        }
-
-        // Upload Document Form
-        document.getElementById('uploadDocumentForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            showNotification('กำลังอัปโหลดเอกสาร...', 'warning');
-            
-            setTimeout(() => {
-                showNotification('อัปโหลดเอกสารสำเร็จ', 'success');
-                closeModal('uploadDocumentModal');
-            }, 2000);
-        });
-    </script>
-</body>
-</html>">ทุกสถานะ</option>
-                                <option value="active">ดำเนินการ</option>
+                                <option value="">ทุกสถานะ</option>
                                 <option value="pending">รอดำเนินการ</option>
+                                <option value="in-progress">กำลังดำเนินการ</option>
+                                <option value="approved">อนุมัติแล้ว</option>
                                 <option value="completed">เสร็จสิ้น</option>
                             </select>
                             <button class="btn" onclick="exportData()">ส่งออกข้อมูล</button>
+                        </div>
+
+                        <div id="currentFilter" style="margin-bottom: 1rem; padding: 0.5rem; background: #e3f2fd; border-radius: 8px; display: none;">
+                            <span style="font-weight: bold;">กรองตาม:</span> <span id="filterLabel"></span>
+                            <button onclick="clearFilter()" style="background: none; border: none; color: #1976d2; cursor: pointer; margin-left: 1rem;">✕ ล้างตัวกรอง</button>
                         </div>
 
                         <table class="data-table">
@@ -770,7 +346,8 @@
                                 <tr>
                                     <th>ชื่อการค้า</th>
                                     <th>ชื่อสามัญ</th>
-                                    <th>บริการ</th>
+                                    <th>ลูกค้า/บริษัท</th>
+                                    <th>ประเภทงาน</th>
                                     <th>สถานะ</th>
                                     <th>วันที่สร้าง</th>
                                     <th>การจัดการ</th>
@@ -780,28 +357,30 @@
                                 <tr>
                                     <td>SuperGrow Plus</td>
                                     <td>NPK 15-15-15</td>
-                                    <td>ขึ้นทะเบียนปุ๋ย</td>
+                                    <td>บริษัท เคมีเกษตร จำกัด</td>
+                                    <td><span style="background: #e3f2fd; color: #1976d2; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem;">ขึ้นทะเบียนปุ๋ย</span></td>
                                     <td><span class="status-badge status-pending">รอดำเนินการ</span></td>
                                     <td>15/12/2024</td>
                                     <td>
                                         <div class="action-buttons">
-                                            <button class="action-btn btn-success" onclick="viewProject(1)">ดู</button>
-                                            <button class="action-btn btn-warning" onclick="editProject(1)">แก้ไข</button>
-                                            <button class="action-btn btn-danger" onclick="deleteProject(1)">ลบ</button>
+                                            <button class="action-btn btn-success" onclick="viewProject(1)">👁️</button>
+                                            <button class="action-btn btn-warning" onclick="editProject(1)">✏️</button>
+                                            <button class="action-btn btn-danger" onclick="deleteProject(1)">🗑️</button>
                                         </div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>BugKill Pro</td>
                                     <td>Cypermethrin 10% EC</td>
-                                    <td>ขึ้นทะเบียนสารเคมี</td>
+                                    <td>ห้างหุ้นส่วน สารเคมี</td>
+                                    <td><span style="background: #fff3e0; color: #ff9800; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem;">วัตถุอันตรายทางการเกษตร</span></td>
                                     <td><span class="status-badge status-approved">อนุมัติแล้ว</span></td>
                                     <td>10/12/2024</td>
                                     <td>
                                         <div class="action-buttons">
-                                            <button class="action-btn btn-success" onclick="viewProject(2)">ดู</button>
-                                            <button class="action-btn btn-warning" onclick="editProject(2)">แก้ไข</button>
-                                            <button class="action-btn btn-danger" onclick="deleteProject(2)">ลบ</button>
+                                            <button class="action-btn btn-success" onclick="viewProject(2)">👁️</button>
+                                            <button class="action-btn btn-warning" onclick="editProject(2)">✏️</button>
+                                            <button class="action-btn btn-danger" onclick="deleteProject(2)">🗑️</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -810,17 +389,13 @@
                     </div>
                 </div>
 
-                <!-- Tasks Section -->
                 <div id="tasks-section" class="section">
                     <div class="content-header">
                         <h2 class="content-title">ติดตามงาน</h2>
-                        <button class="btn" onclick="openModal('addTaskModal')">เพิ่มงานใหม่</button>
                     </div>
                     <div class="content-body">
-                        <div class="alert alert-warning">
-                            มีใบอนุญาต 3 ใบที่จะหมดอายุในเดือนนี้
-                        </div>
-
+                        <div class="alert alert-warning">มีใบอนุญาต 3 ใบที่จะหมดอายุในเดือนนี้</div>
+                        
                         <div class="tab-buttons">
                             <button class="tab-btn active" onclick="showTab('pending-tasks')">งานรอดำเนินการ</button>
                             <button class="tab-btn" onclick="showTab('expiring-licenses')">ใบอนุญาตใกล้หมดอายุ</button>
@@ -835,7 +410,6 @@
                                         <th>ผลิตภัณฑ์</th>
                                         <th>ประเภท</th>
                                         <th>กำหนดเสร็จ</th>
-                                        <th>ระดับความสำคัญ</th>
                                         <th>การจัดการ</th>
                                     </tr>
                                 </thead>
@@ -845,7 +419,6 @@
                                         <td>SuperGrow Plus</td>
                                         <td>ขึ้นทะเบียนปุ๋ย</td>
                                         <td>20/12/2024</td>
-                                        <td><span class="status-badge status-rejected">สูง</span></td>
                                         <td>
                                             <button class="action-btn btn-success" onclick="completeTask(1)">เสร็จ</button>
                                             <button class="action-btn btn-warning" onclick="editTask(1)">แก้ไข</button>
@@ -861,9 +434,8 @@
                                     <tr>
                                         <th>ผลิตภัณฑ์</th>
                                         <th>ประเภทใบอนุญาต</th>
-                                        <th>เลขที่ใบอนุญาต</th>
+                                        <th>เลขที่</th>
                                         <th>วันหมดอายุ</th>
-                                        <th>สถานะ</th>
                                         <th>การจัดการ</th>
                                     </tr>
                                 </thead>
@@ -873,10 +445,8 @@
                                         <td>ใบอนุญาตผลิตสารเคมี</td>
                                         <td>C-2024-001</td>
                                         <td>25/12/2024</td>
-                                        <td><span class="status-badge status-rejected">ใกล้หมดอายุ</span></td>
                                         <td>
                                             <button class="action-btn btn-success" onclick="renewLicense(1)">ต่ออายุ</button>
-                                            <button class="action-btn btn-warning" onclick="contactCustomer(1)">ติดต่อลูกค้า</button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -906,133 +476,13 @@
                     </div>
                 </div>
 
-                <!-- Documents Section -->
                 <div id="documents-section" class="section">
                     <div class="content-header">
                         <h2 class="content-title">จัดการเอกสาร</h2>
                         <button class="btn" onclick="openModal('uploadDocumentModal')">อัปโหลดเอกสาร</button>
                     </div>
                     <div class="content-body">
-                        <div class="search-bar">
-                            <input type="text" class="search-input" placeholder="ค้นหาเอกสาร...">
-                            <select class="filter-select">
-                                <option value="">ทุกประเภท</option>
-                                <option value="certificate">ใบสำคัญ</option>
-                                <option value="application">ใบคำขอ</option>
-                                <option value="test-report">รายงานผลทดสอบ</option>
-                                <option value="license">ใบอนุญาต</option>
-                            </select>
-                        </div>
-
-                        <div class="alert alert-info">
-                            เอกสารทั้งหมดถูกเข้ารหัสและสำรองข้อมูลอัตโนมัติทุกวัน
-                        </div>
-
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>ชื่อเอกสาร</th>
-                                    <th>ผลิตภัณฑ์</th>
-                                    <th>ประเภท</th>
-                                    <th>ขนาดไฟล์</th>
-                                    <th>วันที่อัปโหลด</th>
-                                    <th>การจัดการ</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>ใบสำคัญการขึ้นทะเบียนปุ๋ย</td>
-                                    <td>SuperGrow Plus</td>
-                                    <td>ใบสำคัญ</td>
-                                    <td>2.3 MB</td>
-                                    <td>15/12/2024</td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="action-btn btn-success" onclick="downloadDocument(1)">ดาวน์โหลด</button>
-                                            <button class="action-btn btn-warning" onclick="shareDocument(1)">แชร์</button>
-                                            <button class="action-btn btn-danger" onclick="deleteDocument(1)">ลบ</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>รายงานผลการทดสอบ</td>
-                                    <td>BugKill Pro</td>
-                                    <td>รายงานผลทดสอบ</td>
-                                    <td>1.8 MB</td>
-                                    <td>12/12/2024</td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="action-btn btn-success" onclick="downloadDocument(2)">ดาวน์โหลด</button>
-                                            <button class="action-btn btn-warning" onclick="shareDocument(2)">แชร์</button>
-                                            <button class="action-btn btn-danger" onclick="deleteDocument(2)">ลบ</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Reports Section -->
-                <div id="reports-section" class="section">
-                    <div class="content-header">
-                        <h2 class="content-title">รายงาน</h2>
-                    </div>
-                    <div class="content-body">
-                        <div class="dashboard-stats">
-                            <div class="stat-card">
-                                <div class="stat-icon">📈</div>
-                                <div class="stat-number">87%</div>
-                                <div class="stat-label">อัตราความสำเร็จ</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">⏱️</div>
-                                <div class="stat-number">18</div>
-                                <div class="stat-label">วันเฉลี่ยต่องาน</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">👥</div>
-                                <div class="stat-number">25</div>
-                                <div class="stat-label">ลูกค้าทั้งหมด</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">💰</div>
-                                <div class="stat-number">450K</div>
-                                <div class="stat-label">รายได้เดือนนี้</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Add Project Modal -->
-    <div id="addProjectModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">เพิ่มงานใหม่</h3>
-                <button class="close-btn" onclick="closeModal('addProjectModal')">&times;</button>
-            </div>
-            <form id="addProjectForm">
-                <div class="form-group">
-                    <label class="form-label">ชื่อการค้า *</label>
-                    <input type="text" class="form-input" name="tradeName" required placeholder="ชื่อผลิตภัณฑ์หรือแบรนด์">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">ชื่อสามัญ *</label>
-                    <input type="text" class="form-input" name="genericName" required placeholder="ชื่อทางวิทยาศาสตร์หรือสามัญ">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">ลูกค้า/บริษัท *</label>
-                    <input type="text" class="form-input" name="clientName" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">บริการที่ขอ *</label>
-                    <select class="form-select" name="serviceType" required>
-                        <option value="">เลือกบริการ</option>
-                        <option value="fertilizer">ขึ้นทะเบียนปุ๋ย</option>
-                        <option value="chemical">ขึ้นทะเบียนสารเคมีเกษตร</option>
-                        <option value="hazardous">ขึ้นทะเบียนวัตถุอันตราย</option>
-                        <option value="license">ต่อใบอนุญาตผลิต</option>
-                        <option value="
+                                    <th>ชื่อเอกสาร</th
