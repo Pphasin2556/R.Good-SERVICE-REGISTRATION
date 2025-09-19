@@ -1,1 +1,192 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบจัดการลูกค้าและเอกสาร (Demo + LocalStorage)</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; background: #f5f5f5; }
+    h2 { margin-top: 40px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    th { background: #1976d2; color: white; text-align: left; }
+    .btn { background: #1976d2; color: white; border: none; padding: 6px 12px; margin: 5px; cursor: pointer; border-radius: 4px; }
+    .btn:hover { background: #0d47a1; }
+    input, select { padding: 5px; margin: 5px; }
+  </style>
+</head>
+<body>
+
+  <h1>📋 ระบบจัดการลูกค้าและเอกสาร (Demo + LocalStorage)</h1>
+
+  <!-- ฟอร์มเพิ่มลูกค้า -->
+  <h2>เพิ่มลูกค้าใหม่</h2>
+  <form id="addCustomerForm">
+    <input type="text" name="customerName" placeholder="ชื่อลูกค้า" required>
+    <input type="text" name="companyName" placeholder="บริษัท">
+    <input type="tel" name="phone" placeholder="เบอร์โทร" required>
+    <select name="serviceType" required>
+      <option value="">เลือกบริการ</option>
+      <option value="fertilizer">ขึ้นทะเบียนปุ๋ย</option>
+      <option value="chemical">ขึ้นทะเบียนสารเคมี</option>
+    </select>
+    <button class="btn" type="submit">เพิ่มลูกค้า</button>
+  </form>
+
+  <!-- ตารางลูกค้า -->
+  <table>
+    <thead>
+      <tr>
+        <th>รหัส</th>
+        <th>ชื่อลูกค้า</th>
+        <th>บริษัท</th>
+        <th>บริการ</th>
+        <th>วันที่สร้าง</th>
+      </tr>
+    </thead>
+    <tbody id="customersTable"></tbody>
+  </table>
+
+  <!-- ฟอร์มอัปโหลดเอกสาร -->
+  <h2>อัปโหลดเอกสาร</h2>
+  <form id="uploadDocumentForm">
+    <input type="text" name="documentName" placeholder="ชื่อเอกสาร" required>
+    <select name="customerId" required>
+      <option value="">เลือกลูกค้า</option>
+    </select>
+    <select name="documentType" required>
+      <option value="certificate">ใบสำคัญ</option>
+      <option value="application">ใบคำขอ</option>
+      <option value="license">ใบอนุญาต</option>
+    </select>
+    <button class="btn" type="submit">อัปโหลด</button>
+  </form>
+
+  <!-- ตารางเอกสาร -->
+  <table>
+    <thead>
+      <tr>
+        <th>รหัส</th>
+        <th>ชื่อเอกสาร</th>
+        <th>ลูกค้า</th>
+        <th>ประเภท</th>
+        <th>วันที่อัปโหลด</th>
+      </tr>
+    </thead>
+    <tbody id="documentsTable"></tbody>
+  </table>
+
+<script>
+  // โหลดข้อมูลจาก localStorage
+  let customers = JSON.parse(localStorage.getItem("customers")) || [];
+  let documents = JSON.parse(localStorage.getItem("documents")) || [];
+  let customerCounter = parseInt(localStorage.getItem("customerCounter")) || 0;
+  let documentCounter = parseInt(localStorage.getItem("documentCounter")) || 0;
+
+  function saveData() {
+    localStorage.setItem("customers", JSON.stringify(customers));
+    localStorage.setItem("documents", JSON.stringify(documents));
+    localStorage.setItem("customerCounter", customerCounter);
+    localStorage.setItem("documentCounter", documentCounter);
+  }
+
+  function generateCustomerId() {
+    customerCounter++;
+    saveData();
+    return "CUS-" + customerCounter.toString().padStart(4, "0");
+  }
+
+  function generateDocumentId() {
+    documentCounter++;
+    saveData();
+    return "DOC-" + documentCounter.toString().padStart(4, "0");
+  }
+
+  // เพิ่มลูกค้า
+  document.getElementById("addCustomerForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const customer = {
+      id: generateCustomerId(),
+      name: fd.get("customerName"),
+      company: fd.get("companyName"),
+      phone: fd.get("phone"),
+      serviceType: fd.get("serviceType"),
+      dateCreated: new Date().toLocaleDateString("th-TH")
+    };
+    customers.push(customer);
+    saveData();
+    renderCustomers();
+    renderCustomerOptions();
+    e.target.reset();
+  });
+
+  // อัปโหลดเอกสาร
+  document.getElementById("uploadDocumentForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const document = {
+      id: generateDocumentId(),
+      name: fd.get("documentName"),
+      customerId: fd.get("customerId"),
+      type: fd.get("documentType"),
+      uploadDate: new Date().toLocaleDateString("th-TH")
+    };
+    documents.push(document);
+    saveData();
+    renderDocuments();
+    e.target.reset();
+  });
+
+  // แสดงลูกค้าในตาราง
+  function renderCustomers() {
+    const tbody = document.getElementById("customersTable");
+    tbody.innerHTML = "";
+    customers.forEach(c => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${c.id}</td>
+        <td>${c.name}</td>
+        <td>${c.company || "-"}</td>
+        <td>${c.serviceType}</td>
+        <td>${c.dateCreated}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // แสดงลูกค้าใน select ของเอกสาร
+  function renderCustomerOptions() {
+    const sel = document.querySelector("select[name='customerId']");
+    sel.innerHTML = '<option value="">เลือกลูกค้า</option>';
+    customers.forEach(c=>{
+      sel.innerHTML += `<option value="${c.name}">${c.name}</option>`;
+    });
+  }
+
+  // แสดงเอกสารในตาราง
+  function renderDocuments() {
+    const tbody = document.getElementById("documentsTable");
+    tbody.innerHTML = "";
+    documents.forEach(d => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${d.id}</td>
+        <td>${d.name}</td>
+        <td>${d.customerId}</td>
+        <td>${d.type}</td>
+        <td>${d.uploadDate}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // โหลดข้อมูลครั้งแรก
+  renderCustomers();
+  renderCustomerOptions();
+  renderDocuments();
+</script>
+
+</body>
+</html>
 
