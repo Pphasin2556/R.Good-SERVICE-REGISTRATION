@@ -1,192 +1,1641 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ระบบจัดการลูกค้าและเอกสาร (Demo + LocalStorage)</title>
-  <style>
-    body { font-family: sans-serif; margin: 20px; background: #f5f5f5; }
-    h2 { margin-top: 40px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; }
-    th, td { border: 1px solid #ddd; padding: 8px; }
-    th { background: #1976d2; color: white; text-align: left; }
-    .btn { background: #1976d2; color: white; border: none; padding: 6px 12px; margin: 5px; cursor: pointer; border-radius: 4px; }
-    .btn:hover { background: #0d47a1; }
-    input, select { padding: 5px; margin: 5px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจัดการลูกค้าและเอกสาร - อาร์.กู้ด เซอร์วิส</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1976d2, #2196f3);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1976d2;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            height: fit-content;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            background: #1976d2;
+            color: white;
+            padding: 1.5rem;
+            font-weight: bold;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            border-bottom: 1px solid #eee;
+        }
+
+        .sidebar-menu li:last-child {
+            border-bottom: none;
+        }
+
+        .sidebar-menu a {
+            display: block;
+            padding: 1rem 1.5rem;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding-left: 2rem;
+        }
+
+        .content-area {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .content-header {
+            background: #f8f9fa;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .content-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .btn {
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background: #1565c0;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #4caf50;
+        }
+
+        .btn-success:hover {
+            background: #388e3c;
+        }
+
+        .btn-warning {
+            background: #ff9800;
+        }
+
+        .btn-warning:hover {
+            background: #f57c00;
+        }
+
+        .btn-danger {
+            background: #f44336;
+        }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+
+        .content-body {
+            padding: 2rem;
+        }
+
+        .search-bar {
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #1976d2;
+        }
+
+        .filter-select {
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            min-width: 150px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .data-table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .status-approved {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .status-rejected {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .status-expired {
+            background: #fce4ec;
+            color: #ad1457;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.3rem 0.8rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #1976d2;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .file-upload {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload:hover {
+            border-color: #1976d2;
+            background: #f0f8ff;
+        }
+
+        .file-upload.dragover {
+            border-color: #1976d2;
+            background: #e3f2fd;
+        }
+
+        .uploaded-files {
+            margin-top: 1rem;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            z-index: 1001;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: #4caf50;
+        }
+
+        .notification.error {
+            background: #f44336;
+        }
+
+        .notification.warning {
+            background: #ff9800;
+        }
+
+        .tab-buttons {
+            display: flex;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 2rem;
+        }
+
+        .tab-btn {
+            padding: 1rem 2rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn.active {
+            color: #1976d2;
+            border-bottom-color: #1976d2;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+
+        .alert-warning {
+            background: #fff3e0;
+            border-color: #ff9800;
+            color: #e65100;
+        }
+
+        .alert-info {
+            background: #e3f2fd;
+            border-color: #2196f3;
+            color: #0d47a1;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .sidebar {
+                order: 2;
+            }
+
+            .content-area {
+                order: 1;
+            }
+
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">📋 ระบบจัดการลูกค้า - อาร์.กู้ด เซอร์วิส</div>
+            <div class="user-info">
+                <span>👤 Admin</span>
+                <button class="btn" onclick="logout()">ออกจากระบบ</button>
+            </div>
+        </div>
+    </div>
 
-  <h1>📋 ระบบจัดการลูกค้าและเอกสาร (Demo + LocalStorage)</h1>
+    <div class="container">
+        <!-- Dashboard Stats -->
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-number" id="totalCustomers">48</div>
+                <div class="stat-label">ลูกค้าทั้งหมด</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📋</div>
+                <div class="stat-number" id="activeProjects">12</div>
+                <div class="stat-label">โครงการดำเนินการ</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏰</div>
+                <div class="stat-number" id="pendingTasks">8</div>
+                <div class="stat-label">งานรอดำเนินการ</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📁</div>
+                <div class="stat-number" id="totalDocuments">156</div>
+                <div class="stat-label">เอกสารทั้งหมด</div>
+            </div>
+        </div>
 
-  <!-- ฟอร์มเพิ่มลูกค้า -->
-  <h2>เพิ่มลูกค้าใหม่</h2>
-  <form id="addCustomerForm">
-    <input type="text" name="customerName" placeholder="ชื่อลูกค้า" required>
-    <input type="text" name="companyName" placeholder="บริษัท">
-    <input type="tel" name="phone" placeholder="เบอร์โทร" required>
-    <select name="serviceType" required>
-      <option value="">เลือกบริการ</option>
-      <option value="fertilizer">ขึ้นทะเบียนปุ๋ย</option>
-      <option value="chemical">ขึ้นทะเบียนสารเคมี</option>
-    </select>
-    <button class="btn" type="submit">เพิ่มลูกค้า</button>
-  </form>
+        <div class="main-content">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-header">เมนูหลัก</div>
+                <ul class="sidebar-menu">
+                    <li><a href="#" onclick="showSection('customers')" class="active">👥 ข้อมูลลูกค้า</a></li>
+                    <li><a href="#" onclick="showSection('tasks')">📋 ติดตามงาน</a></li>
+                    <li><a href="#" onclick="showSection('documents')">📁 จัดการเอกสาร</a></li>
+                    <li><a href="#" onclick="showSection('calendar')">📅 ปฏิทินงาน</a></li>
+                    <li><a href="#" onclick="showSection('reports')">📊 รายงาน</a></li>
+                    <li><a href="#" onclick="showSection('settings')">⚙️ ตั้งค่า</a></li>
+                </ul>
+            </div>
 
-  <!-- ตารางลูกค้า -->
-  <table>
-    <thead>
-      <tr>
-        <th>รหัส</th>
-        <th>ชื่อลูกค้า</th>
-        <th>บริษัท</th>
-        <th>บริการ</th>
-        <th>วันที่สร้าง</th>
-      </tr>
-    </thead>
-    <tbody id="customersTable"></tbody>
-  </table>
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Customers Section -->
+                <div id="customers-section" class="section active">
+                    <div class="content-header">
+                        <h2 class="content-title">จัดการข้อมูลลูกค้า</h2>
+                        <button class="btn" onclick="openModal('addCustomerModal')">
+                            ➕ เพิ่มลูกค้าใหม่
+                        </button>
+                    </div>
+                    <div class="content-body">
+                        <div class="search-bar">
+                            <input type="text" class="search-input" placeholder="ค้นหาลูกค้า..." id="customerSearch">
+                            <select class="filter-select" id="customerFilter">
+                                <option value="">ทุกสถานะ</option>
+                                <option value="active">ลูกค้าปัจจุบัน</option>
+                                <option value="pending">รอดำเนินการ</option>
+                                <option value="completed">เสร็จสิ้น</option>
+                            </select>
+                            <button class="btn" onclick="exportCustomers()">📤 ส่งออกข้อมูล</button>
+                        </div>
 
-  <!-- ฟอร์มอัปโหลดเอกสาร -->
-  <h2>อัปโหลดเอกสาร</h2>
-  <form id="uploadDocumentForm">
-    <input type="text" name="documentName" placeholder="ชื่อเอกสาร" required>
-    <select name="customerId" required>
-      <option value="">เลือกลูกค้า</option>
-    </select>
-    <select name="documentType" required>
-      <option value="certificate">ใบสำคัญ</option>
-      <option value="application">ใบคำขอ</option>
-      <option value="license">ใบอนุญาต</option>
-    </select>
-    <button class="btn" type="submit">อัปโหลด</button>
-  </form>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ชื่อลูกค้า</th>
+                                    <th>บริษัท</th>
+                                    <th>บริการ</th>
+                                    <th>สถานะ</th>
+                                    <th>วันที่สร้าง</th>
+                                    <th>การจัดการ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customersTable">
+                                <tr>
+                                    <td>คุณสมชาย ใจดี</td>
+                                    <td>บริษัท เคมีเกษตร จำกัด</td>
+                                    <td>ขึ้นทะเบียนปุ๋ย</td>
+                                    <td><span class="status-badge status-pending">รอดำเนินการ</span></td>
+                                    <td>15/12/2024</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn btn-success" onclick="viewCustomer(1)">👁️</button>
+                                            <button class="action-btn btn-warning" onclick="editCustomer(1)">✏️</button>
+                                            <button class="action-btn btn-danger" onclick="deleteCustomer(1)">🗑️</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>คุณวิชัย ประสบสุข</td>
+                                    <td>ห้างหุ้นส่วน สารเคมี</td>
+                                    <td>ขึ้นทะเบียนสารเคมี</td>
+                                    <td><span class="status-badge status-approved">อนุมัติแล้ว</span></td>
+                                    <td>10/12/2024</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn btn-success" onclick="viewCustomer(2)">👁️</button>
+                                            <button class="action-btn btn-warning" onclick="editCustomer(2)">✏️</button>
+                                            <button class="action-btn btn-danger" onclick="deleteCustomer(2)">🗑️</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-  <!-- ตารางเอกสาร -->
-  <table>
-    <thead>
-      <tr>
-        <th>รหัส</th>
-        <th>ชื่อเอกสาร</th>
-        <th>ลูกค้า</th>
-        <th>ประเภท</th>
-        <th>วันที่อัปโหลด</th>
-      </tr>
-    </thead>
-    <tbody id="documentsTable"></tbody>
-  </table>
+                <!-- Tasks Section -->
+                <div id="tasks-section" class="section">
+                    <div class="content-header">
+                        <h2 class="content-title">ติดตามงาน</h2>
+                        <button class="btn" onclick="openModal('addTaskModal')">
+                            ➕ เพิ่มงานใหม่
+                        </button>
+                    </div>
+                    <div class="content-body">
+                        <div class="alert alert-warning">
+                            ⚠️ มีใบอนุญาต 3 ใบที่จะหมดอายุในเดือนนี้
+                        </div>
 
-<script>
-  // โหลดข้อมูลจาก localStorage
-  let customers = JSON.parse(localStorage.getItem("customers")) || [];
-  let documents = JSON.parse(localStorage.getItem("documents")) || [];
-  let customerCounter = parseInt(localStorage.getItem("customerCounter")) || 0;
-  let documentCounter = parseInt(localStorage.getItem("documentCounter")) || 0;
+                        <div class="tab-buttons">
+                            <button class="tab-btn active" onclick="showTab('pending-tasks')">งานรอดำเนินการ</button>
+                            <button class="tab-btn" onclick="showTab('expiring-licenses')">ใบอนุญาตใกล้หมดอายุ</button>
+                            <button class="tab-btn" onclick="showTab('completed-tasks')">งานเสร็จสิ้น</button>
+                        </div>
 
-  function saveData() {
-    localStorage.setItem("customers", JSON.stringify(customers));
-    localStorage.setItem("documents", JSON.stringify(documents));
-    localStorage.setItem("customerCounter", customerCounter);
-    localStorage.setItem("documentCounter", documentCounter);
-  }
+                        <div id="pending-tasks" class="tab-content active">
+                            <div style="margin-bottom: 2rem;">
+                                <h4 style="color: #1976d2; margin-bottom: 1rem;">ขั้นตอนการดำเนินงานมาตรฐาน</h4>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                                    <div style="background: #e3f2fd; padding: 1rem; border-radius: 8px; border-left: 4px solid #2196f3;">
+                                        <h5 style="color: #1976d2; margin-bottom: 0.5rem;">📋 ขั้นที่ 1: รับเอกสาร</h5>
+                                        <small>รับเอกสารจากลูกค้า ตรวจสอบความครบถ้วน</small>
+                                    </div>
+                                    <div style="background: #fff3e0; padding: 1rem; border-radius: 8px; border-left: 4px solid #ff9800;">
+                                        <h5 style="color: #f57c00; margin-bottom: 0.5rem;">🔍 ขั้นที่ 2: ตรวจสอบ</h5>
+                                        <small>ตรวจสอบเอกสาร วิเคราะห์ข้อมูล</small>
+                                    </div>
+                                    <div style="background: #f3e5f5; padding: 1rem; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                                        <h5 style="color: #7b1fa2; margin-bottom: 0.5rem;">📝 ขั้นที่ 3: จัดทำเอกสาร</h5>
+                                        <small>เตรียมเอกสารยื่นขออนุมัติ</small>
+                                    </div>
+                                    <div style="background: #e8f5e8; padding: 1rem; border-radius: 8px; border-left: 4px solid #4caf50;">
+                                        <h5 style="color: #388e3c; margin-bottom: 0.5rem;">📤 ขั้นที่ 4: ยื่นคำขอ</h5>
+                                        <small>ยื่นคำขอต่อหน่วยงาน</small>
+                                    </div>
+                                    <div style="background: #fce4ec; padding: 1rem; border-radius: 8px; border-left: 4px solid #e91e63;">
+                                        <h5 style="color: #c2185b; margin-bottom: 0.5rem;">⏰ ขั้นที่ 5: ติดตาม</h5>
+                                        <small>ติดตามผลการพิจารณา</small>
+                                    </div>
+                                    <div style="background: #e0f2f1; padding: 1rem; border-radius: 8px; border-left: 4px solid #009688;">
+                                        <h5 style="color: #00695c; margin-bottom: 0.5rem;">✅ ขั้นที่ 6: ส่งมอบ</h5>
+                                        <small>รับใบอนุมัติและส่งมอบลูกค้า</small>
+                                    </div>
+                                </div>
+                            </div>
 
-  function generateCustomerId() {
-    customerCounter++;
-    saveData();
-    return "CUS-" + customerCounter.toString().padStart(4, "0");
-  }
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>งาน</th>
+                                        <th>ลูกค้า</th>
+                                        <th>ขั้นตอนปัจจุบัน</th>
+                                        <th>กำหนดเสร็จ</th>
+                                        <th>ระดับความสำคัญ</th>
+                                        <th>การจัดการ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>ขึ้นทะเบียนปุ๋ยเคมี</td>
+                                        <td>บริษัท เคมีเกษตร จำกัด</td>
+                                        <td><span class="status-badge status-pending">ขั้นที่ 2: ตรวจสอบเอกสาร</span></td>
+                                        <td>20/12/2024</td>
+                                        <td><span class="status-badge" style="background: #ffebee; color: #c62828;">สูง</span></td>
+                                        <td>
+                                            <button class="action-btn btn-success" onclick="updateTaskStep(1, 3)" title="ไปขั้นถัดไป">⏭️</button>
+                                            <button class="action-btn btn-warning" onclick="viewTaskDetail(1)" title="ดูรายละเอียด">👁️</button>
+                                            <button class="action-btn btn-warning" onclick="editTask(1)" title="แก้ไข">✏️</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>ต่อใบอนุญาตผลิต</td>
+                                        <td>ห้างหุ้นส่วน สารเคมี</td>
+                                        <td><span class="status-badge status-approved">ขั้นที่ 4: ยื่นคำขอแล้ว</span></td>
+                                        <td>25/12/2024</td>
+                                        <td><span class="status-badge" style="background: #fff3e0; color: #e65100;">ปานกลาง</span></td>
+                                        <td>
+                                            <button class="action-btn btn-success" onclick="updateTaskStep(2, 5)" title="ไปขั้นถัดไป">⏭️</button>
+                                            <button class="action-btn btn-warning" onclick="viewTaskDetail(2)" title="ดูรายละเอียด">👁️</button>
+                                            <button class="action-btn btn-warning" onclick="editTask(2)" title="แก้ไข">✏️</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>ขึ้นทะเบียนสารกำจัดแมลง</td>
+                                        <td>บริษัท ABC จำกัด</td>
+                                        <td><span class="status-badge status-pending">ขั้นที่ 1: รอเอกสารเพิ่มเติม</span></td>
+                                        <td>30/12/2024</td>
+                                        <td><span class="status-badge" style="background: #e8f5e8; color: #2e7d32;">ต่ำ</span></td>
+                                        <td>
+                                            <button class="action-btn btn-success" onclick="contactCustomerForDoc(3)" title="ติดต่อขอเอกสาร">📞</button>
+                                            <button class="action-btn btn-warning" onclick="viewTaskDetail(3)" title="ดูรายละเอียด">👁️</button>
+                                            <button class="action-btn btn-warning" onclick="editTask(3)" title="แก้ไข">✏️</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
-  function generateDocumentId() {
-    documentCounter++;
-    saveData();
-    return "DOC-" + documentCounter.toString().padStart(4, "0");
-  }
+                        <div id="expiring-licenses" class="tab-content">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ลูกค้า</th>
+                                        <th>ประเภทใบอนุญาต</th>
+                                        <th>เลขที่ใบอนุญาต</th>
+                                        <th>วันหมดอายุ</th>
+                                        <th>สถานะ</th>
+                                        <th>การจัดการ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>บริษัท ABC จำกัด</td>
+                                        <td>ใบอนุญาตผลิตปุ๋ย</td>
+                                        <td>F-2024-001</td>
+                                        <td>25/12/2024</td>
+                                        <td><span class="status-badge status-expired">ใกล้หมดอายุ</span></td>
+                                        <td>
+                                            <button class="action-btn btn-success" onclick="renewLicense(1)">🔄</button>
+                                            <button class="action-btn btn-warning" onclick="contactCustomer(1)">📞</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
-  // เพิ่มลูกค้า
-  document.getElementById("addCustomerForm").addEventListener("submit", function(e){
-    e.preventDefault();
-    const fd = new FormData(e.target);
-    const customer = {
-      id: generateCustomerId(),
-      name: fd.get("customerName"),
-      company: fd.get("companyName"),
-      phone: fd.get("phone"),
-      serviceType: fd.get("serviceType"),
-      dateCreated: new Date().toLocaleDateString("th-TH")
-    };
-    customers.push(customer);
-    saveData();
-    renderCustomers();
-    renderCustomerOptions();
-    e.target.reset();
-  });
+                        <div id="completed-tasks" class="tab-content">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>งาน</th>
+                                        <th>ลูกค้า</th>
+                                        <th>วันที่เสร็จ</th>
+                                        <th>ผู้รับผิดชอบ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>ส่งมอบใบสำคัญการขึ้นทะเบียน</td>
+                                        <td>บริษัท XYZ จำกัด</td>
+                                        <td>14/12/2024</td>
+                                        <td>Admin</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
 
-  // อัปโหลดเอกสาร
-  document.getElementById("uploadDocumentForm").addEventListener("submit", function(e){
-    e.preventDefault();
-    const fd = new FormData(e.target);
-    const document = {
-      id: generateDocumentId(),
-      name: fd.get("documentName"),
-      customerId: fd.get("customerId"),
-      type: fd.get("documentType"),
-      uploadDate: new Date().toLocaleDateString("th-TH")
-    };
-    documents.push(document);
-    saveData();
-    renderDocuments();
-    e.target.reset();
-  });
+                <!-- Documents Section -->
+                <div id="documents-section" class="section">
+                    <div class="content-header">
+                        <h2 class="content-title">จัดการเอกสาร</h2>
+                        <button class="btn" onclick="openModal('uploadDocumentModal')">
+                            📤 อัปโหลดเอกสาร
+                        </button>
+                    </div>
+                    <div class="content-body">
+                        <div class="search-bar">
+                            <input type="text" class="search-input" placeholder="ค้นหาเอกสาร..." id="documentSearch">
+                            <select class="filter-select" id="documentFilter">
+                                <option value="">ทุกประเภท</option>
+                                <option value="certificate">ใบสำคัญ</option>
+                                <option value="application">ใบคำขอ</option>
+                                <option value="test-report">รายงานผลทดสอบ</option>
+                                <option value="license">ใบอนุญาต</option>
+                            </select>
+                            <select class="filter-select" id="customerDocumentFilter">
+                                <option value="">ทุกลูกค้า</option>
+                                <option value="1">บริษัท เคมีเกษตร จำกัด</option>
+                                <option value="2">ห้างหุ้นส่วน สารเคมี</option>
+                            </select>
+                        </div>
 
-  // แสดงลูกค้าในตาราง
-  function renderCustomers() {
-    const tbody = document.getElementById("customersTable");
-    tbody.innerHTML = "";
-    customers.forEach(c => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${c.id}</td>
-        <td>${c.name}</td>
-        <td>${c.company || "-"}</td>
-        <td>${c.serviceType}</td>
-        <td>${c.dateCreated}</td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
+                        <div class="alert alert-info">
+                            💡 เอกสารทั้งหมดถูกเข้ารหัสและสำรองข้อมูลอัตโนมัติทุกวัน
+                        </div>
 
-  // แสดงลูกค้าใน select ของเอกสาร
-  function renderCustomerOptions() {
-    const sel = document.querySelector("select[name='customerId']");
-    sel.innerHTML = '<option value="">เลือกลูกค้า</option>';
-    customers.forEach(c=>{
-      sel.innerHTML += `<option value="${c.name}">${c.name}</option>`;
-    });
-  }
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ชื่อเอกสาร</th>
+                                    <th>ลูกค้า</th>
+                                    <th>ประเภท</th>
+                                    <th>ขนาดไฟล์</th>
+                                    <th>วันที่อัปโหลด</th>
+                                    <th>การจัดการ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="documentsTable">
+                                <tr>
+                                    <td>📄 ใบสำคัญการขึ้นทะเบียนปุ๋ย</td>
+                                    <td>บริษัท เคมีเกษตร จำกัด</td>
+                                    <td>ใบสำคัญ</td>
+                                    <td>2.3 MB</td>
+                                    <td>15/12/2024</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn btn-success" onclick="downloadDocument(1)">⬇️</button>
+                                            <button class="action-btn btn-warning" onclick="shareDocument(1)">🔗</button>
+                                            <button class="action-btn btn-danger" onclick="deleteDocument(1)">🗑️</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>📋 รายงานผลการทดสอบ</td>
+                                    <td>ห้างหุ้นส่วน สารเคมี</td>
+                                    <td>รายงานผลทดสอบ</td>
+                                    <td>1.8 MB</td>
+                                    <td>12/12/2024</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn btn-success" onclick="downloadDocument(2)">⬇️</button>
+                                            <button class="action-btn btn-warning" onclick="shareDocument(2)">🔗</button>
+                                            <button class="action-btn btn-danger" onclick="deleteDocument(2)">🗑️</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  // แสดงเอกสารในตาราง
-  function renderDocuments() {
-    const tbody = document.getElementById("documentsTable");
-    tbody.innerHTML = "";
-    documents.forEach(d => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${d.id}</td>
-        <td>${d.name}</td>
-        <td>${d.customerId}</td>
-        <td>${d.type}</td>
-        <td>${d.uploadDate}</td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
+    <!-- Add Customer Modal -->
+    <div id="addCustomerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">เพิ่มลูกค้าใหม่</h3>
+                <button class="close-btn" onclick="closeModal('addCustomerModal')">×</button>
+            </div>
+            <form id="addCustomerForm">
+                <div class="form-group">
+                    <label class="form-label">ชื่อ-นามสกุล *</label>
+                    <input type="text" class="form-input" name="customerName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">บริษัท</label>
+                    <input type="text" class="form-input" name="companyName">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">เบอร์โทรศัพท์ *</label>
+                    <input type="tel" class="form-input" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">อีเมล</label>
+                    <input type="email" class="form-input" name="email">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">บริการที่สนใจ *</label>
+                    <select class="form-select" name="serviceType" required>
+                        <option value="">เลือกบริการ</option>
+                        <option value="fertilizer">ขึ้นทะเบียนปุ๋ย</option>
+                        <option value="chemical">ขึ้นทะเบียนสารเคมีเกษตร</option>
+                        <option value="hazardous">ขึ้นทะเบียนวัตถุอันตราย</option>
+                        <option value="license">ต่อใบอนุญาตผลิต</option>
+                        <option value="import">ใบอนุญาตนำเข้า</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">หมายเหตุ</label>
+                    <textarea class="form-textarea" name="notes" placeholder="รายละเอียดเพิ่มเติม"></textarea>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button type="button" class="btn" style="background: #666;" onclick="closeModal('addCustomerModal')">ยกเลิก</button>
+                    <button type="submit" class="btn btn-success">บันทึก</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-  // โหลดข้อมูลครั้งแรก
-  renderCustomers();
-  renderCustomerOptions();
-  renderDocuments();
-</script>
+    <!-- Upload Document Modal -->
+    <div id="uploadDocumentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">อัปโหลดเอกสาร</h3>
+                <button class="close-btn" onclick="closeModal('uploadDocumentModal')">×</button>
+            </div>
+            <form id="uploadDocumentForm">
+                <div class="form-group">
+                    <label class="form-label">ลูกค้า *</label>
+                    <select class="form-select" name="customerId" required>
+                        <option value="">เลือกลูกค้า</option>
+                        <option value="1">บริษัท เคมีเกษตร จำกัด</option>
+                        <option value="2">ห้างหุ้นส่วน สารเคมี</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">ประเภทเอกสาร *</label>
+                    <select class="form-select" name="documentType" required>
+                        <option value="">เลือกประเภท</option>
+                        <option value="certificate">ใบสำคัญการขึ้นทะเบียน</option>
+                        <option value="application">ใบคำขอ</option>
+                        <option value="test-report">รายงานผลการทดสอบ</option>
+                        <option value="license">ใบอนุญาต</option>
+                        <option value="other">อื่นๆ</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">ชื่อเอกสาร</label>
+                    <input type="text" class="form-input" name="documentName" placeholder="ระบุชื่อเอกสาร">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">อัปโหลดไฟล์</label>
+                    <div class="file-upload" id="fileUploadArea">
+                        <div class="upload-icon" style="font-size: 3rem; margin-bottom: 1rem;">📁</div>
+                        <div>คลิกเพื่อเลือกไฟล์หรือลากไฟล์มาวางที่นี่</div>
+                        <small style="color: #666; margin-top: 0.5rem; display: block;">รองรับ: PDF, DOC, DOCX, JPG, PNG (ขนาดไม่เกิน 10MB)</small>
+                        <input type="file" id="documentFileInput" style="display: none;" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                    </div>
+                    <div class="uploaded-files" id="uploadedFilesList"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">หมายเหตุ</label>
+                    <textarea class="form-textarea" name="documentNotes" placeholder="รายละเอียดเพิ่มเติม"></textarea>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button type="button" class="btn" style="background: #666;" onclick="closeModal('uploadDocumentModal')">ยกเลิก</button>
+                    <button type="submit" class="btn btn-success">อัปโหลด</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
+    <!-- Customer Detail Modal -->
+    <div id="customerDetailModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3 class="modal-title">รายละเอียดลูกค้า</h3>
+                <button class="close-btn" onclick="closeModal('customerDetailModal')">×</button>
+            </div>
+            <div id="customerDetailContent">
+                <!-- Customer detail content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <script>
+        // Global variables
+        let currentSection = 'customers';
+        let uploadedFiles = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSystem();
+            setupEventListeners();
+        });
+
+        function initializeSystem() {
+            // Load dashboard stats
+            updateDashboardStats();
+            
+            // Setup file upload
+            setupFileUpload();
+            
+            // Load data
+            loadCustomersData();
+            loadTasksData();
+            loadDocumentsData();
+            
+            console.log('Customer Management System initialized');
+        }
+
+        function setupEventListeners() {
+            // Search functionality
+            document.getElementById('customerSearch').addEventListener('input', filterCustomers);
+            document.getElementById('customerFilter').addEventListener('change', filterCustomers);
+            
+            // Form submissions
+            document.getElementById('addCustomerForm').addEventListener('submit', handleAddCustomer);
+            document.getElementById('uploadDocumentForm').addEventListener('submit', handleUploadDocument);
+        }
+
+        // Section Management
+        function showSection(sectionName) {
+            // Update active menu item
+            document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName + '-section').style.display = 'block';
+            currentSection = sectionName;
+        }
+
+        // Tab Management
+        function showTab(tabName) {
+            // Update active tab button
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        // Modal Management
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            
+            // Reset form if it exists
+            const form = document.querySelector(`#${modalId} form`);
+            if (form) {
+                form.reset();
+            }
+            
+            // Clear uploaded files
+            uploadedFiles = [];
+            updateUploadedFilesList();
+        }
+
+        // Customer Management
+        function handleAddCustomer(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            
+            const customerData = {
+                name: formData.get('customerName'),
+                company: formData.get('companyName'),
+                phone: formData.get('phone'),
+                email: formData.get('email'),
+                serviceType: formData.get('serviceType'),
+                notes: formData.get('notes'),
+                status: 'pending',
+                dateCreated: new Date().toLocaleDateString('th-TH')
+            };
+
+            // Add to customers data (in real app, this would be an API call)
+            addCustomerToTable(customerData);
+            
+            closeModal('addCustomerModal');
+            showNotification('เพิ่มลูกค้าใหม่สำเร็จ', 'success');
+            
+            // Update stats
+            updateDashboardStats();
+        }
+
+        function addCustomerToTable(customerData) {
+            const tableBody = document.getElementById('customersTable');
+            const row = document.createElement('tr');
+            
+            const serviceNames = {
+                fertilizer: 'ขึ้นทะเบียนปุ๋ย',
+                chemical: 'ขึ้นทะเบียนสารเคมี',
+                hazardous: 'ขึ้นทะเบียนวัตถุอันตราย',
+                license: 'ต่อใบอนุญาตผลิต',
+                import: 'ใบอนุญาตนำเข้า'
+            };
+            
+            row.innerHTML = `
+                <td>${customerData.name}</td>
+                <td>${customerData.company || '-'}</td>
+                <td>${serviceNames[customerData.serviceType] || customerData.serviceType}</td>
+                <td><span class="status-badge status-pending">รอดำเนินการ</span></td>
+                <td>${customerData.dateCreated}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="action-btn btn-success" onclick="viewCustomer(${Date.now()})">👁️</button>
+                        <button class="action-btn btn-warning" onclick="editCustomer(${Date.now()})">✏️</button>
+                        <button class="action-btn btn-danger" onclick="deleteCustomer(${Date.now()})">🗑️</button>
+                    </div>
+                </td>
+            `;
+            
+            tableBody.appendChild(row);
+        }
+
+        function viewCustomer(customerId) {
+            // Mock customer data - in real app, fetch from API
+            const customerDetail = `
+                <div style="padding: 1rem;">
+                    <h4 style="margin-bottom: 1rem; color: #1976d2;">ข้อมูลลูกค้า</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+                        <div><strong>ชื่อ:</strong> คุณสมชาย ใจดี</div>
+                        <div><strong>บริษัท:</strong> บริษัท เคมีเกษตร จำกัด</div>
+                        <div><strong>โทรศัพท์:</strong> 084-375-2399</div>
+                        <div><strong>อีเมล:</strong> somchai@email.com</div>
+                        <div><strong>บริการ:</strong> ขึ้นทะเบียนปุ๋ย</div>
+                        <div><strong>สถานะ:</strong> <span class="status-badge status-pending">รอดำเนินการ</span></div>
+                    </div>
+                    
+                    <h4 style="margin-bottom: 1rem; color: #1976d2;">ประวัติการทำงาน</h4>
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
+                        <div style="margin-bottom: 0.5rem;">📋 15/12/2024 - สร้างข้อมูลลูกค้า</div>
+                        <div style="margin-bottom: 0.5rem;">📝 16/12/2024 - รับเอกสารเบื้องต้น</div>
+                        <div style="margin-bottom: 0.5rem;">⏰ รอการส่งเอกสารเพิ่มเติม</div>
+                    </div>
+                    
+                    <h4 style="margin-bottom: 1rem; color: #1976d2;">เอกสารที่เกี่ยวข้อง</h4>
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <span>📄 ใบคำขอขึ้นทะเบียน</span>
+                            <button class="btn" style="padding: 0.3rem 0.8rem; font-size: 0.9rem;">ดาวน์โหลด</button>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>📋 เอกสารประกอบ</span>
+                            <button class="btn" style="padding: 0.3rem 0.8rem; font-size: 0.9rem;">ดาวน์โหลด</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('customerDetailContent').innerHTML = customerDetail;
+            openModal('customerDetailModal');
+        }
+
+        function editCustomer(customerId) {
+            showNotification('ฟีเจอร์แก้ไขข้อมูลลูกค้า - กำลังพัฒนา', 'warning');
+        }
+
+        function deleteCustomer(customerId) {
+            if (confirm('แน่ใจหรือไม่ที่จะลบข้อมูลลูกค้านี้?')) {
+                showNotification('ลบข้อมูลลูกค้าสำเร็จ', 'success');
+                // In real app, make API call to delete
+            }
+        }
+
+        function filterCustomers() {
+            const searchTerm = document.getElementById('customerSearch').value.toLowerCase();
+            const filterValue = document.getElementById('customerFilter').value;
+            
+            // Implementation for filtering customers table
+            showNotification('กำลังค้นหา...', 'warning');
+        }
+
+        function exportCustomers() {
+            showNotification('ส่งออกข้อมูลลูกค้าสำเร็จ', 'success');
+        }
+
+        // Document Management
+        function setupFileUpload() {
+            const uploadArea = document.getElementById('fileUploadArea');
+            const fileInput = document.getElementById('documentFileInput');
+
+            uploadArea.addEventListener('click', () => fileInput.click());
+
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                handleFiles(e.dataTransfer.files);
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                handleFiles(e.target.files);
+            });
+        }
+
+        function handleFiles(files) {
+            for (let file of files) {
+                if (file.size > 10 * 1024 * 1024) {
+                    showNotification(`ไฟล์ ${file.name} ใหญ่เกิน 10MB`, 'error');
+                    continue;
+                }
+
+                uploadedFiles.push(file);
+            }
+            updateUploadedFilesList();
+        }
+
+        function updateUploadedFilesList() {
+            const container = document.getElementById('uploadedFilesList');
+            container.innerHTML = '';
+
+            uploadedFiles.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <span>📄 ${file.name} (${formatFileSize(file.size)})</span>
+                    <button type="button" onclick="removeUploadedFile(${index})" style="background: #f44336; color: white; border: none; border-radius: 3px; padding: 0.2rem 0.5rem; cursor: pointer;">×</button>
+                `;
+                container.appendChild(fileItem);
+            });
+        }
+
+        function removeUploadedFile(index) {
+            uploadedFiles.splice(index, 1);
+            updateUploadedFilesList();
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function handleUploadDocument(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+
+            if (uploadedFiles.length === 0) {
+                showNotification('กรุณาเลือกไฟล์ที่จะอัปโหลด', 'error');
+                return;
+            }
+
+            // Simulate upload process
+            showNotification('กำลังอัปโหลดเอกสาร...', 'warning');
+            
+            setTimeout(() => {
+                showNotification('อัปโหลดเอกสารสำเร็จ', 'success');
+                closeModal('uploadDocumentModal');
+                
+                // Add to documents table
+                addDocumentToTable({
+                    name: uploadedFiles[0].name,
+                    customerId: formData.get('customerId'),
+                    type: formData.get('documentType'),
+                    size: formatFileSize(uploadedFiles[0].size),
+                    uploadDate: new Date().toLocaleDateString('th-TH')
+                });
+                
+                uploadedFiles = [];
+            }, 2000);
+        }
+
+        function addDocumentToTable(documentData) {
+            const tableBody = document.getElementById('documentsTable');
+            const row = document.createElement('tr');
+            
+            const customerNames = {
+                '1': 'บริษัท เคมีเกษตร จำกัด',
+                '2': 'ห้างหุ้นส่วน สารเคมี'
+            };
+            
+            const typeNames = {
+                'certificate': 'ใบสำคัญ',
+                'application': 'ใบคำขอ',
+                'test-report': 'รายงานผลทดสอบ',
+                'license': 'ใบอนุญาต',
+                'other': 'อื่นๆ'
+            };
+            
+            row.innerHTML = `
+                <td>📄 ${documentData.name}</td>
+                <td>${customerNames[documentData.customerId] || 'ไม่ระบุ'}</td>
+                <td>${typeNames[documentData.type] || documentData.type}</td>
+                <td>${documentData.size}</td>
+                <td>${documentData.uploadDate}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="action-btn btn-success" onclick="downloadDocument(${Date.now()})">⬇️</button>
+                        <button class="action-btn btn-warning" onclick="shareDocument(${Date.now()})">🔗</button>
+                        <button class="action-btn btn-danger" onclick="deleteDocument(${Date.now()})">🗑️</button>
+                    </div>
+                </td>
+            `;
+            
+            tableBody.appendChild(row);
+        }
+
+        function downloadDocument(docId) {
+            showNotification('เริ่มการดาวน์โหลด...', 'success');
+        }
+
+        function shareDocument(docId) {
+            const shareUrl = `https://yourdomain.com/share/doc/${docId}`;
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                showNotification('คัดลอกลิงก์แชร์แล้ว', 'success');
+            });
+        }
+
+        function deleteDocument(docId) {
+            if (confirm('แน่ใจหรือไม่ที่จะลบเอกสารนี้?')) {
+                showNotification('ลบเอกสารสำเร็จ', 'success');
+            }
+        }
+
+        // Task Management Functions (Extended)
+        function updateTaskStep(taskId, nextStep) {
+            const stepNames = {
+                1: 'รับเอกสาร',
+                2: 'ตรวจสอบ', 
+                3: 'จัดทำเอกสาร',
+                4: 'ยื่นคำขอ',
+                5: 'ติดตาม',
+                6: 'ส่งมอบ'
+            };
+            
+            if (confirm(`ต้องการย้ายงานไปขั้นที่ ${nextStep}: ${stepNames[nextStep]}?`)) {
+                showNotification(`อัปเดตงานไปขั้นที่ ${nextStep}: ${stepNames[nextStep]} แล้ว`, 'success');
+                
+                // Update dashboard stats
+                updateDashboardStats();
+            }
+        }
+
+        function viewTaskDetail(taskId) {
+            const taskDetails = {
+                1: {
+                    title: 'ขึ้นทะเบียนปุ๋ยเคมี',
+                    customer: 'บริษัท เคมีเกษตร จำกัด',
+                    currentStep: 2,
+                    details: 'รอตรวจสอบเอกสารสูตรปุ๋ยและรายงานการทดสอบ',
+                    documents: ['ใบคำขอ', 'สูตรปุ๋ย', 'รายงานผลทดสอบ'],
+                    nextAction: 'ส่งเอกสารไปทดสอบเพิ่มเติม',
+                    deadline: '20/12/2024'
+                },
+                2: {
+                    title: 'ต่อใบอนุญาตผลิต',
+                    customer: 'ห้างหุ้นส่วน สารเคมี', 
+                    currentStep: 4,
+                    details: 'ยื่นคำขอต่ออายุแล้ว รอผลจากกรมวิชาการเกษตร',
+                    documents: ['ใบอนุญาตเดิม', 'ใบคำขอต่ออายุ', 'หลักฐานการชำระค่าธรรมเนียม'],
+                    nextAction: 'ติดตามผลกับเจ้าหน้าที่ กษ.',
+                    deadline: '25/12/2024'
+                }
+            };
+            
+            const task = taskDetails[taskId];
+            if (!task) return;
+            
+            const stepNames = ['', 'รับเอกสาร', 'ตรวจสอบ', 'จัดทำเอกสาร', 'ยื่นคำขอ', 'ติดตาม', 'ส่งมอบ'];
+            
+            const detailContent = `
+                <div style="padding: 1rem;">
+                    <h4 style="color: #1976d2; margin-bottom: 1rem;">${task.title}</h4>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+                        <div><strong>ลูกค้า:</strong> ${task.customer}</div>
+                        <div><strong>กำหนดเสร็จ:</strong> ${task.deadline}</div>
+                        <div><strong>ขั้นตอนปัจจุบัน:</strong> ขั้นที่ ${task.currentStep}: ${stepNames[task.currentStep]}</div>
+                        <div><strong>การดำเนินการต่อไป:</strong> ${task.nextAction}</div>
+                    </div>
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <h5 style="color: #1976d2; margin-bottom: 0.5rem;">รายละเอียด:</h5>
+                        <p>${task.details}</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <h5 style="color: #1976d2; margin-bottom: 0.5rem;">เอกสารที่เกี่ยวข้อง:</h5>
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                            ${task.documents.map(doc => `<span style="background: #e3f2fd; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">📄 ${doc}</span>`).join('')}
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <h5 style="color: #1976d2; margin-bottom: 0.5rem;">ความคืบหน้า:</h5>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            ${Array.from({length: 6}, (_, i) => {
+                                const step = i + 1;
+                                const isCompleted = step < task.currentStep;
+                                const isCurrent = step === task.currentStep;
+                                const color = isCompleted ? '#4caf50' : isCurrent ? '#ff9800' : '#ddd';
+                                return `<div style="width: 30px; height: 30px; border-radius: 50%; background: ${color}; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">${step}</div>`;
+                            }).join('')}
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #666;">
+                            <span>รับเอกสาร</span>
+                            <span>ตรวจสอบ</span>
+                            <span>จัดทำ</span>
+                            <span>ยื่นขอ</span>
+                            <span>ติดตาม</span>
+                            <span>ส่งมอบ</span>
+                        </div>
+                    </div>
+
+                    ${task.currentStep >= 5 ? `
+                    <div style="margin-bottom: 2rem; background: #fff3e0; padding: 1rem; border-radius: 8px; border-left: 4px solid #ff9800;">
+                        <h5 style="color: #f57c00; margin-bottom: 1rem;">📸 หลักฐานการติดตามผล</h5>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                            <div style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='100' viewBox='0 0 150 100'%3E%3Crect width='150' height='100' fill='%23f0f0f0'/%3E%3Ctext x='75' y='50' text-anchor='middle' fill='%23666' font-size='12'%3E📄 ใบรับคำขอ%3C/text%3E%3C/svg%3E" style="width: 100%; height: 100px; object-fit: cover;">
+                                <div style="padding: 0.5rem; font-size: 0.8rem; text-align: center;">ใบรับยื่นคำขอ</div>
+                            </div>
+                            <div style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='100' viewBox='0 0 150 100'%3E%3Crect width='150' height='100' fill='%23e3f2fd'/%3E%3Ctext x='75' y='50' text-anchor='middle' fill='%23666' font-size='12'%3E🏢 สำนักงาน กษ.%3C/text%3E%3C/svg%3E" style="width: 100%; height: 100px; object-fit: cover;">
+                                <div style="padding: 0.5rem; font-size: 0.8rem; text-align: center;">หน้าสำนักงาน กษ.</div>
+                            </div>
+                            <div style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='100' viewBox='0 0 150 100'%3E%3Crect width='150' height='100' fill='%23e8f5e8'/%3E%3Ctext x='75' y='50' text-anchor='middle' fill='%23666' font-size='10'%3E📞 ติดต่อเจ้าหน้าที่%3C/text%3E%3C/svg%3E" style="width: 100%; height: 100px; object-fit: cover;">
+                                <div style="padding: 0.5rem; font-size: 0.8rem; text-align: center;">การติดต่อประสานงาน</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn" style="padding: 0.5rem 1rem; font-size: 0.9rem;" onclick="uploadProgressPhoto(${taskId})">📸 เพิ่มรูปความคืบหน้า</button>
+                            <button class="btn btn-success" style="padding: 0.5rem 1rem; font-size: 0.9rem;" onclick="shareProgressWithCustomer(${taskId})">📤 ส่งให้ลูกค้าดู</button>
+                        </div>
+                    </div>
+                    ` : ''}
+                    
+                    <div style="display: flex; gap: 1rem; justify-content: center;">
+                        <button class="btn btn-success" onclick="updateTaskStep(${taskId}, ${task.currentStep + 1}); closeModal('customerDetailModal');">
+                            ไปขั้นถัดไป: ${stepNames[task.currentStep + 1] || 'เสร็จสิ้น'}
+                        </button>
+                        <button class="btn btn-warning" onclick="contactCustomerForUpdate(${taskId})">
+                            แจ้งลูกค้า
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('customerDetailContent').innerHTML = detailContent;
+            openModal('customerDetailModal');
+        }
+
+        function contactCustomerForDoc(taskId) {
+            const phoneNumber = '0843752399'; // หมายเลขของคุณ
+            const message = 'สวัสดีครับ เรื่องการขึ้นทะเบียนของท่าน ขณะนี้เราต้องการเอกสารเพิ่มเติมครับ รบกวนติดต่อกลับด้วยนะครับ';
+            
+            // เปิด Line หรือโทรศัพท์
+            if (confirm('ต้องการติดต่อลูกค้าผ่านช่องทางไหน?\n\nOK = โทรศัพท์\nCancel = Line')) {
+                window.location.href = `tel:${phoneNumber}`;
+            } else {
+                // เปิด Line (ต้องแก้ให้เหมาะกับระบบ Line ของคุณ)
+                showNotification('เปิดระบบ Line เพื่อติดต่อลูกค้า', 'success');
+            }
+        }
+
+        function uploadProgressPhoto(taskId) {
+            // สร้าง modal สำหรับอัปโหลดรูปความคืบหน้า
+            const uploadModal = document.createElement('div');
+            uploadModal.className = 'modal active';
+            uploadModal.innerHTML = `
+                <div class="modal-content" style="max-width: 500px;">
+                    <div class="modal-header">
+                        <h3 class="modal-title">📸 เพิ่มรูปความคืบหน้า</h3>
+                        <button class="close-btn" onclick="this.closest('.modal').remove()">×</button>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label">ประเภทหลักฐาน</label>
+                            <select class="form-select" id="photoType">
+                                <option value="receipt">ใบรับคำขอ</option>
+                                <option value="office">หน้าสำนักงานที่ติดตาม</option>
+                                <option value="meeting">การประชุม/ประสานงาน</option>
+                                <option value="document">เอกสารเพิ่มเติม</option>
+                                <option value="other">อื่นๆ</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">คำอธิบาย</label>
+                            <input type="text" class="form-input" id="photoDescription" placeholder="อธิบายรูปนี้">
+                        </div>
+                        <div class="form-group">
+                            <div class="file-upload" onclick="document.getElementById('progressPhotoInput').click()" style="cursor: pointer;">
+                                <div style="font-size: 3rem; margin-bottom: 1rem;">📷</div>
+                                <div>คลิกเพื่อเลือกรูปภาพ</div>
+                                <small style="color: #666;">รองรับ: JPG, PNG (ขนาดไม่เกิน 5MB)</small>
+                            </div>
+                            <input type="file" id="progressPhotoInput" style="display: none;" accept="image/*">
+                        </div>
+                        <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                            <button class="btn" style="background: #666;" onclick="this.closest('.modal').remove()">ยกเลิก</button>
+                            <button class="btn btn-success" onclick="saveProgressPhoto(${taskId}); this.closest('.modal').remove();">บันทึกรูป</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(uploadModal);
+        }
+
+        function saveProgressPhoto(taskId) {
+            const photoType = document.getElementById('photoType').value;
+            const description = document.getElementById('photoDescription').value;
+            const fileInput = document.getElementById('progressPhotoInput');
+            
+            if (!fileInput.files[0]) {
+                showNotification('กรุณาเลือกรูปภาพ', 'error');
+                return;
+            }
+
+            // จำลองการบันทึกรูป
+            showNotification('บันทึกรูปความคืบหน้าสำเร็จ', 'success');
+            
+            // อัปเดต UI ให้แสดงรูปใหม่
+            setTimeout(() => {
+                showNotification('รูปถูกเพิ่มในประวัติความคืบหน้าแล้ว', 'success');
+            }, 1000);
+        }
+
+        function shareProgressWithCustomer(taskId) {
+            // ตัวเลือกการส่งให้ลูกค้า
+            const shareModal = document.createElement('div');
+            shareModal.className = 'modal active';
+            shareModal.innerHTML = `
+                <div class="modal-content" style="max-width: 400px;">
+                    <div class="modal-header">
+                        <h3 class="modal-title">📤 ส่งรูปให้ลูกค้า</h3>
+                        <button class="close-btn" onclick="this.closest('.modal').remove()">×</button>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <p style="margin-bottom: 1.5rem;">เลือกช่องทางการส่งรูปความคืบหน้าให้ลูกค้า:</p>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <button class="btn" onclick="sendViaLine(${taskId}); this.closest('.modal').remove();">
+                                💬 ส่งผ่าน Line
+                            </button>
+                            <button class="btn" onclick="sendViaEmail(${taskId}); this.closest('.modal').remove();">
+                                📧 ส่งผ่านอีเมล
+                            </button>
+                            <button class="btn" onclick="generateShareLink(${taskId}); this.closest('.modal').remove();">
+                                🔗 สร้างลิงก์แชร์
+                            </button>
+                        </div>
+                        <div style="text-align: center; margin-top: 1rem;">
+                            <button class="btn" style="background: #666;" onclick="this.closest('.modal').remove()">ยกเลิก</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(shareModal);
+        }
+
+        function sendViaLine(taskId) {
+            const message = 'สวัสดีครับ! แจ้งความคืบหน้าการดำเนินงานของท่าน ขณะนี้เราได้ไปติดตามที่หน่วยงานแล้ว มีรูปประกอบส่งให้ดูครับ';
+            showNotification('เปิด Line เพื่อส่งรูปให้ลูกค้า', 'success');
+            
+            // เปิด Line OA
+            window.open('https://line.me/R/ti/p/@991cyisb', '_blank');
+        }
+
+        function sendViaEmail(taskId) {
+            const subject = 'แจ้งความคืบหน้า - การขึ้นทะเบียน';
+            const body = 'เรียนลูกค้า%0A%0Aแจ้งความคืบหน้าการดำเนินงาน ขณะนี้เราได้ไปติดตามที่หน่วยงานแล้ว%0Aมีรูปประกอบแนบมาด้วย%0A%0Aขอบคุณครับ';
+            window.location.href = `mailto:?subject=${subject}&body=${body}`;
+        }
+
+        function generateShareLink(taskId) {
+            const shareUrl = `https://yourdomain.com/progress/${taskId}`;
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                showNotification('คัดลอกลิงก์แชร์แล้ว ส่งให้ลูกค้าได้เลย', 'success');
+            });
+        }
+
+        // Utility Functions
+        function updateDashboardStats() {
+            // Simulate stats update
+            document.getElementById('totalCustomers').textContent = Math.floor(Math.random() * 50) + 40;
+            document.getElementById('activeProjects').textContent = Math.floor(Math.random() * 15) + 10;
+            document.getElementById('pendingTasks').textContent = Math.floor(Math.random() * 10) + 5;
+            document.getElementById('totalDocuments').textContent = Math.floor(Math.random() * 200) + 150;
+        }
+
+        function loadCustomersData() {
+            // Mock function - in real app, fetch from API
+            console.log('Loading customers data...');
+        }
+
+        function loadTasksData() {
+            // Mock function - in real app, fetch from API
+            console.log('Loading tasks data...');
+        }
+
+        function loadDocumentsData() {
+            // Mock function - in real app, fetch from API
+            console.log('Loading documents data...');
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function logout() {
+            if (confirm('แน่ใจหรือไม่ที่จะออกจากระบบ?')) {
+                showNotification('ออกจากระบบสำเร็จ', 'success');
+                // Redirect to login page
+            }
+        }
+
+        // Auto-save draft functionality
+        setInterval(() => {
+            // Auto-save any form data as draft
+            console.log('Auto-saving drafts...');
+        }, 30000); // Every 30 seconds
+    </script>
 </body>
 </html>
-
